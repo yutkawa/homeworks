@@ -1,17 +1,22 @@
 # 📄 宿題連絡サイト（教科別メニュー）
 
 確認したい教科のボタン（リンク）をクリックしてください。
-日々の宿題が教科ごとにまとまっています。
+宿題が教科ごとにまとまっています。
 
 ---
 
 ## 📚 教科を選択する
-* 📐 **[数学（算数）の宿題はこちら](./subjects/math.md)**
-* 📘 **[英語の宿題はこちら](./subjects/english.md)**
-* 📝 **[国語の宿題はこちら](./subjects/japanese.md)**
+* **[国語](./subjects/japanese.md)**
+* **[数学](./subjects/math.md)**
+* **[英語](./subjects/english.md)**
+* **[理科](./subjects/science.md)**
+* **[社会](./subjects/social.md)**
+* **[美術](./subjects/art.md)**
+* **[音楽](./subjects/music.md)**
+* **[技術](./subjects/tech.md)**
+* **[家庭](./subjects/home.md)**
+* **[その他](./subjects/other.md)**
 
+* **[アーカイブ](./subjects/archive.md)**
 ---
 
-## 📢 全体のお知らせ
-* 7月1日は全校集会があるため、標準服（正装）で登校してください。
-* 個人面談の希望調査用紙の提出期限は **7月3日（金）** までです。
