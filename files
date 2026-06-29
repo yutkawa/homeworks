@@ -1,11 +1,12 @@
-├── index.md              
-└── subjects/              # 教科別のフォルダ
-    ├── japanese.md        # 国語
-    ├── math.md            # 数学
-    ├── english.md         # 英語
-    ├── science.md         # 理科
-    ├── social.md          # 社会
-    ├── art.md             # 美術
-    ├── music.md           # 音楽
-    ├── tech-home.md       # 技術・家庭科
-    └── others.md          # その他（学活・提出物など）
+├── index.md
+└── subjects/
+    ├── japanese.md
+    ├── math.md
+    ├── english.md
+    ├── science.md
+    ├── social.md
+    ├── art.md
+    ├── music.md
+    ├── tech.md
+    ├── home.md
+    └── other.md
