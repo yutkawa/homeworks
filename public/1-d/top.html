@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-D 宿題・連絡サイト</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f7fa; color: #333; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
+        .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .tab-btn { padding: 10px 16px; border: none; background: #e2e8f0; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .tab-btn.active { background: #3182ce; color: white; }
+        h2 { color: #4a5568; margin-top: 25px; font-size: 18px; border-left: 5px solid #3182ce; padding-left: 8px; }
+        .card { background: white; padding: 18px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .latest-card { border-left: 6px solid #e53e3e; background: #fffaf0; }
+        .archive-card { border-left: 4px solid #718096; }
+        .date { font-weight: bold; color: #718096; margin-bottom: 6px; font-size: 14px; }
+        .content { font-size: 17px; font-weight: bold; margin-bottom: 8px; color: #1a202c; }
+        .meta { font-size: 14px; color: #4a5568; background: #edf2f7; padding: 10px; border-radius: 4px; line-height: 1.6; }
+        .no-data { text-align: center; color: #a0aec0; padding: 30px; font-weight: bold; }
+    </style>
+</head>
+<body>
 
+    <h1>📄 1-D 宿題連絡サイト</h1>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchSubject('japanese')">📝 国語</button>
+        <button class="tab-btn" onclick="switchSubject('math')">📐 数学</button>
+        <button class="tab-btn" onclick="switchSubject('english')">📘 英語</button>
+        <button class="tab-btn" onclick="switchSubject('science')">🧪 理科</button>
+        <button class="tab-btn" onclick="switchSubject('social')">🗺️ 社会</button>
+        <button class="tab-btn" onclick="switchSubject('art')">🖼️ 美術</button>
+        <button class="tab-btn" onclick="switchSubject('music')">🎵 音楽</button>
+        <button class="tab-btn" onclick="switchSubject('tech')">🛠️ 技術</button>
+        <button class="tab-btn" onclick="switchSubject('home')">🍳 家庭科</button>
+        <button class="tab-btn" onclick="switchSubject('other')">🔔 その他</button>
+    </div>
+
+    <h2>🚨 最新の宿題</h2>
+    <div id="latest-area"></div>
+
+    <h2>📦 過去のアーカイブ</h2>
+    <div id="archive-area"></div>
+
+    <script>
+        let allData = [];
+        let currentSubject = 'japanese';
+
+        // 常に最新データを取得するためタイムスタンプを付与
+        fetch('./homework.json?v=' + new Date().getTime())
+            .then(res => res.json())
+            .then(data => { allData = data; render(); })
+            .catch(() => { 
+                document.getElementById('latest-area').innerHTML = '<p class="no-data">現在、新しい宿題連絡はありません。</p>'; 
+                document.getElementById('archive-area').innerHTML = '<p class="no-data">過去の履歴はありません。</p>'; 
+            });
+
+        function switchSubject(sub) {
+            currentSubject = sub;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            render();
+        }
+
+        function render() {
+            const latestArea = document.getElementById('latest-area');
+            const archiveArea = document.getElementById('archive-area');
+            latestArea.innerHTML = archiveArea.innerHTML = '';
+
+            const myData = allData.filter(item => item.subject === currentSubject);
+
+            if (myData.length === 0) {
+                latestArea.innerHTML = '<p class="no-data">現在、新しい宿題連絡はありません。</p>';
+                archiveArea.innerHTML = '<p class="no-data">過去の履歴はありません。</p>';
+                return;
+            }
+
+            myData.forEach((item, index) => {
+                const html = `
+                    <div class="card ${index === 0 ? 'latest-card' : 'archive-card'}">
+                        <div class="date">📅 出題日: ${item.date}</div>
+                        <div class="content">✏️ 範囲: ${item.content}</div>
+                        <div class="meta">
+                            ⏳ <strong>提出期限:</strong> ${item.deadline}<br>
+                            💡 <strong>連絡・備考:</strong> ${item.notice}
+                        </div>
+                    </div>
+                `;
+                if (index === 0) latestArea.innerHTML = html;
+                else archiveArea.insertAdjacentHTML('beforeend', html);
+            });
+        }
+    </script>
+</body>
+</html>
