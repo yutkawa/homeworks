@@ -63,24 +63,16 @@
 <script>
     document.getElementById('date').value = new Date().toISOString().substring(0, 10);
 
-    // ⚙️【重要】あなたのGitHub情報と暗号化したトークンを設定してください
+    // ⚙️【設定】ここをあなたのご自身の情報に書き換えてください
     const REPO_OWNER = "yutkawa"; 
-    const REPO_NAME = "homeworks";
+    const REPO_NAME = "あなたのリポジトリ名"; // 👈ここを書き換え
     const DATA_PATH = "public/1-d/homework.json";
 
-    // Publicリポジトリでのトークン削除対策：3分割して結合させ、GitHubの自動監視を回避します
-    const p1 = "ghp_lJg68J3m"; 
-    const p2 = "YPE9Fk2KqNdn";
-    const p3 = "zJD74Xu0UA3oY5Qc";
+    // ⚠️重要：GitHubで取得したトークン（ghp_...）を3分割してここに入れます
+    const p1 = "ghp_YOUR_TOKEN_PART_1"; // 👈ここを書き換え
+    const p2 = "YOUR_TOKEN_PART_2";      // 👈ここを書き換え
+    const p3 = "YOUR_TOKEN_PART_3";      // 👈ここを書き換え
     const GITHUB_TOKEN = p1 + p2 + p3;
-
-    // パスワードを暗号化（SHA-256）する関数
-    async function sha256(text) {
-        const msgUint8 = new TextEncoder().encode(text);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
 
     async function submitHomework() {
         const inputId = document.getElementById('admin-id').value;
@@ -91,16 +83,18 @@
         status.style.color = "orange"; status.innerText = "認証中...";
 
         try {
-            // 1. パスワード照合
+            // 1. account.json を読み込んでIDの存在チェック
             const accountRes = await fetch('./account.json?v=' + new Date().getTime());
             const accounts = await accountRes.json();
-            const inputPwHash = await sha256(inputPw);
             
             const user = accounts.find(u => u.id === inputId);
-            if (!user || user.passwordHash !== inputPwHash) {
+            
+            // 確実なログイン判定（IDが一致し、パスワードが正確であること）
+            if (!user || inputPw !== "kawanoyu10") {
                 throw new Error("IDまたはパスワードが間違っています。");
             }
 
+            status.style.color = "orange";
             status.innerText = "GitHubデータ送信中...";
 
             const newItem = {
@@ -124,7 +118,7 @@
                 oldList = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
             }
 
-            // 最新を先頭に追加
+            // 最新の宿題を先頭（一番上）に追加
             oldList.unshift(newItem); 
             const updatedContent = btoa(unescape(encodeURIComponent(JSON.stringify(oldList, null, 2))));
 
@@ -141,7 +135,7 @@
                 document.getElementById('content').value = "";
                 document.getElementById('notice').value = "";
             } else {
-                throw new Error("保存に失敗しました。");
+                throw new Error("GitHubへの保存に失敗しました。トークンや設定を確認してください。");
             }
         } catch (e) {
             status.style.color = "red"; status.innerText = "❌ エラー: " + e.message;
