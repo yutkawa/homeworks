@@ -46,7 +46,7 @@ header[data-subject="技術・家庭"] { background: #a0522d !important; }
 header[data-subject="音楽"] { background: #1a202c !important; }
 header[data-subject="美術"] { background: #805ad5 !important; }
 
-/* 📂 教科別ナビゲーションボタン（折り返し対応版） */
+/* 📂 教科別ナビゲーションボタン（折り返し＋中央寄せ） */
 .filter-headline {
     max-width: 550px;
     margin: 1.5rem auto 0.6rem auto;
@@ -54,6 +54,7 @@ header[data-subject="美術"] { background: #805ad5 !important; }
     font-size: 0.9rem;
     color: #64748b;
     font-weight: bold;
+    text-align: center; /* 💡 見出しも真ん中に */
 }
 
 .subject-nav {
@@ -61,8 +62,9 @@ header[data-subject="美術"] { background: #805ad5 !important; }
     margin: 0 auto;
     padding: 0.2rem 1rem;
     display: flex;
-    gap: 8px;           /* ボタン同士のすき間（少しコンパクトに調整） */
-    flex-wrap: wrap;    /* 💡 画面端で自動的に折り返す設定 */
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center; /* 💡 これでボタンが中央に集まります */
     box-sizing: border-box;
 }
 
@@ -70,15 +72,15 @@ header[data-subject="美術"] { background: #805ad5 !important; }
 .nav-btn {
     background: #ffffff;
     border: 2px solid #e2e8f0;
-    padding: 0.5rem 1rem; /* 2段になってもすっきり見えるよう上下左右を微調整 */
+    padding: 0.5rem 1rem;
     border-radius: 25px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 0.9rem;    /* 折り返したときに収まりが良いサイズ */
+    font-size: 0.9rem;
     color: #475569;
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     
-    /* ✨ ボタンがアクティブになる時・外れる時の両方で、0.3秒かけてフワッと色を変える */
+    /* ✨ ボタンの色を0.3秒かけてフワッと変える */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
 }
 
@@ -97,7 +99,7 @@ header[data-subject="美術"] { background: #805ad5 !important; }
 .nav-btn[data-subject="音楽"].active { background-color: #1a202c; border-color: #1a202c; color: white; }
 .nav-btn[data-subject="美術"].active { background-color: #805ad5; border-color: #805ad5; color: white; }
 
-/* 宿戦カード内の「教科バッジ」の背景色 */
+/* 宿題カード内の「教科バッジ」の背景色 */
 .subject-badge[data-subject="国語"] { background-color: #e53e3e; }
 .subject-badge[data-subject="数学"] { background-color: #3182ce; }
 .subject-badge[data-subject="社会"] { background-color: #d69e2e; color: #fff; }
