@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1-D 宿題一覧</title>
+    <title>1-D 宿題チェッカー</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 1. ヘッダー：開いた瞬間から絶対表示（ボタンと連動して色が変わります） -->
-    <header id="js-header" data-subject="すべて">
-        <h1>✏️ 1-D 宿題公開サイト</h1>
-        <p class="update-info">最終更新日: <span id="js-update">読み込み中...</span></p>
+
+    <!-- 🏷️ ヘッダーエリア（パステルアニメーション対応） -->
+    <header id="page-header">
+        <h1>1-D 宿題チェッカー</h1>
+        <p class="update-info">データ更新: <span id="last-updated">--/-- --:--</span></p>
     </header>
 
-    <div class="filter-headline">教科を選択してください。</div>
-    
-    <!-- 2. 教科切り替えボタン -->
+    <!-- 📂 教科別ナビゲーションボタン（折り返し＆中央寄せ） -->
+    <p class="filter-headline">教科でしぼりこむ</p>
     <nav class="subject-nav">
         <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
         <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
@@ -28,164 +28,24 @@
         <button class="nav-btn" data-subject="美術" onclick="filterSubject('美術')">美術</button>
     </nav>
 
-    <!-- 3. 2週間前警告ゾーン：データ受信後に必要なら自動出現 -->
-    <div id="js-alert-container" class="alert-zone" style="display: none;">
-        <h2>⚠️ 提出期限が2週間以内の宿題！</h2>
-        <div id="js-alert-list"></div>
-    </div>
+    <!-- ⚠️ 2週間前警告ゾーン -->
+    <section id="alert-zone" class="alert-zone" style="display: none;">
+        <h2>もうすぐしめきり！（2週間以内）</h2>
+        <div id="alert-container"></div>
+    </section>
 
-    <!-- 4. メインコンテンツ：カードが並ぶエリア -->
-    <main id="js-homework-container">
-        <p class="loading">スプレッドシートから宿題データを読み込み中...</p>
+    <!-- 📋 宿題カードメインエリア -->
+    <main>
+        <div id="homework-container">
+            <div class="loading">宿題データをよみこんでいます...</div>
+        </div>
     </main>
 
+    <!-- 🦶 フッターエリア -->
     <footer>
-        <p>© 2026 1-D Homework Board</p>
+        <p>&copy; 2026 1-D Homework Board</p>
     </footer>
 
-    <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyJgbQJZQDMNt_PqSg6VdpXhrJJHKKpzEKa8Sx5KU4TjF80gLDDbr0mUxhcNf8AUi1p1g/exec"; 
-        
-        let allHomework = [];
-        let currentFilter = 'すべて';
-
-        // スプレッドシートからのデータ読み込み
-        async function loadHomework() {
-            try {
-                const response = await fetch(GAS_URL);
-                if (!response.ok) throw new Error('データの取得に失敗しました');
-                
-                const data = await response.json();
-                document.getElementById('js-update').textContent = data.last_update;
-                allHomework = data.homework_list || [];
-                
-                checkUrgentHomework();
-                renderHomework(currentFilter);
-
-            } catch (error) {
-                document.getElementById('js-update').textContent = "エラー";
-                document.getElementById('js-homework-container').innerHTML = 
-                    `<p class="error">エラー: スプレッドシートからのデータ読み込みに失敗しました。</p>`;
-                console.error(error);
-            }
-        }
-
-        // 提出期限の2週間前チェック機能
-        function checkUrgentHomework() {
-            const alertContainer = document.getElementById('js-alert-container');
-            const alertList = document.getElementById('js-alert-list');
-            alertList.innerHTML = '';
-            
-            const today = new Date();
-            let hasUrgent = false;
-
-            allHomework.forEach(item => {
-                if (!item.deadline) return;
-
-                let deadlineDate = new Date(item.deadline);
-                if (isNaN(deadlineDate.getTime())) {
-                    const match = item.deadline.match(/(\d+)月(\d+)日/);
-                    if (match) {
-                        deadlineDate = new Date(today.getFullYear(), parseInt(match[1]) - 1, parseInt(match[2]));
-                    }
-                }
-
-                if (!isNaN(deadlineDate.getTime())) {
-                    const timeDiff = deadlineDate.getTime() - today.getTime();
-                    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                    if (daysDiff >= 0 && daysDiff <= 14) {
-                        hasUrgent = true;
-                        
-                        // スプレッドシート側が「技術」や「家庭」単体でも「技術・家庭」として判定
-                        let displaySubject = item.subject;
-                        if (displaySubject === '技術' || displaySubject === '家庭') {
-                            displaySubject = '技術・家庭';
-                        }
-
-                        const alertCard = document.createElement('div');
-                        alertCard.className = 'alert-card';
-                        alertCard.innerHTML = `
-                            <span class="alert-badge" data-subject="${displaySubject}">${displaySubject}</span>
-                            <span class="alert-range">${item.range}</span>
-                            <span class="alert-days">あと ${daysDiff} 日！</span>
-                        `;
-                        alertList.appendChild(alertCard);
-                    }
-                }
-            });
-
-            if (hasUrgent) {
-                alertContainer.style.display = 'block';
-            }
-        }
-
-        // カード描画機能
-        function renderHomework(targetSubject) {
-            const container = document.getElementById('js-homework-container');
-            
-            if (allHomework.length === 0 && document.getElementById('js-update').textContent === "読み込み中...") {
-                container.innerHTML = `<p class="loading">データを受信しています。少々お待ちください...</p>`;
-                return;
-            }
-
-            container.innerHTML = '';
-
-            // フィルター判定（技術・家庭ボタンが押された時は、データ側が「技術」「家庭」「技術・家庭」のどれでも表示する）
-            const filtered = allHomework.filter(item => {
-                if (targetSubject === 'すべて') return true;
-                if (targetSubject === '技術・家庭') {
-                    return item.subject === '技術' || item.subject === '家庭' || item.subject === '技術・家庭';
-                }
-                return item.subject === targetSubject;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="loading">現在、「${targetSubject}」の登録されている宿題はありません。🎉</p>`;
-                return;
-            }
-
-            filtered.forEach(item => {
-                let displaySubject = item.subject || '未設定';
-                if (displaySubject === '技術' || displaySubject === '家庭') {
-                    displaySubject = '技術・家庭';
-                }
-
-                const card = document.createElement('section');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <span class="subject-badge" data-subject="${displaySubject}">${displaySubject}</span>
-                        <span class="deadline">${item.deadline ? `⏳ 提出期限: ${item.deadline}` : ''}</span>
-                    </div>
-                    <div class="card-body">
-                        <p class="range">${item.range || '範囲未入力'}</p>
-                        ${item.notes ? `<p class="notes">💡 注意: ${item.notes}</p>` : ''}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // ボタンクリック時の連動処理
-        function filterSubject(subject) {
-            currentFilter = subject;
-            renderHomework(subject);
-            
-            // ヘッダーのデータ属性を書き換えて、CSSの色変更を発動させる
-            document.getElementById('js-header').setAttribute('data-subject', subject);
-            
-            const buttons = document.querySelectorAll('.nav-btn');
-            buttons.forEach(btn => {
-                if (btn.getAttribute('data-subject') === subject) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
-        window.addEventListener('DOMContentLoaded', loadHomework);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
