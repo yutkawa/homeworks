@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 1. ヘッダー：開いた瞬間から絶対表示 -->
     <header>
         <h1>✏️ 1-D 宿題連絡板</h1>
         <p class="update-info">最終更新日: <span id="js-update">読み込み中...</span></p>
@@ -14,7 +15,7 @@
 
     <div class="filter-headline">教科を選んでね</div>
     
-    <!-- 💡 ボタンエリア：各ボタンに、下のカラーリストに対応する data-subject 属性を付けました -->
+    <!-- 2. 教科切り替えボタン：開いた瞬間から絶対表示 -->
     <nav class="subject-nav">
         <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
         <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
@@ -28,11 +29,13 @@
         <button class="nav-btn" data-subject="美術" onclick="filterSubject('美術')">美術</button>
     </nav>
 
+    <!-- 3. 2週間前警告ゾーン：データ受信後に必要なら自動出現 -->
     <div id="js-alert-container" class="alert-zone" style="display: none;">
         <h2>⚠️ 提出期限が2週間以内の宿題！</h2>
         <div id="js-alert-list"></div>
     </div>
 
+    <!-- 4. メインコンテンツ：カードが並ぶエリア -->
     <main id="js-homework-container">
         <p class="loading">スプレッドシートから宿題データを読み込み中...</p>
     </main>
@@ -47,6 +50,7 @@
         let allHomework = [];
         let currentFilter = 'すべて';
 
+        // スプレッドシートからのデータ読み込み
         async function loadHomework() {
             try {
                 const response = await fetch(GAS_URL);
@@ -67,6 +71,7 @@
             }
         }
 
+        // 提出期限の2週間前チェック機能
         function checkUrgentHomework() {
             const alertContainer = document.getElementById('js-alert-container');
             const alertList = document.getElementById('js-alert-list');
@@ -94,7 +99,6 @@
                         hasUrgent = true;
                         const alertCard = document.createElement('div');
                         alertCard.className = 'alert-card';
-                        // 警告欄のバッジも教科ごとの色になるよう data-subject を付与
                         alertCard.innerHTML = `
                             <span class="alert-badge" data-subject="${item.subject}">${item.subject}</span>
                             <span class="alert-range">${item.range}</span>
@@ -110,6 +114,7 @@
             }
         }
 
+        // カード描画機能
         function renderHomework(targetSubject) {
             const container = document.getElementById('js-homework-container');
             
@@ -130,7 +135,6 @@
             filtered.forEach(item => {
                 const card = document.createElement('section');
                 card.className = 'card';
-                // 宿題カードのバッジに data-subject を設定してCSSと連動させます
                 card.innerHTML = `
                     <div class="card-header">
                         <span class="subject-badge" data-subject="${item.subject || '未設定'}">${item.subject || '未設定'}</span>
@@ -145,6 +149,7 @@
             });
         }
 
+        // ボタンクリック時の連動処理
         function filterSubject(subject) {
             currentFilter = subject;
             renderHomework(subject);
