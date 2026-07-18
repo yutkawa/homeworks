@@ -1,21 +1,34 @@
 let homeworkData = [];
-let targetAlertDays = 14; // 💡 デフォルトの警告日数基準（14日前）
+let targetAlertDays = 14; 
 
-// 1. APIから宿題データを取得
+// 1. 新しいAPIのURLから宿題データを取得 (JSONP)
 async function fetchHomeworkZone() {
-    const jsonpUrl = "https://script.google.com/macros/s/AKfycbygGsnA6-vE9R-v2Vn6_0mB3H2WpM9OQ4_3u_q5x8g/exec?prefix=handleResponse";
+    // 💡 共有いただいた最新のデプロイURLを反映し、末尾に必須のコールバックパラメータを付与しました
+    const jsonpUrl = "https://script.google.com/macros/s/AKfycbyXeMODh3S94llRj5T__R3CfoEBJUXHKeHJ35ThSdyqSb13zm6jtAWq1uZFiKRctDq5-g/exec?prefix=handleResponse";
     
+    // タイムアウト監視（10秒経っても反応がなければ画面にエラーを出す）
+    const timeoutId = setTimeout(() => {
+        if (homeworkData.length === 0) {
+            showError("GASからの応答がありません。GASのデプロイ設定（アクセスできるユーザー）が『全員』になっているか再度ご確認ください。");
+        }
+    }, 10000);
+
     const script = document.createElement('script');
     script.src = jsonpUrl;
+    script.onerror = () => {
+        clearTimeout(timeoutId);
+        showError("スクリプトの読み込みに失敗しました（URLの形式に問題がある可能性があります）。");
+    };
     document.body.appendChild(script);
 }
 
-// 2. JSONPコールバック関数
+// 2. JSONPコールバック関数 (GASからデータが届くとここが実行されます)
 function handleResponse(response) {
     if (response && response.error) {
-        showError(response.error);
+        showError("GASエラー: " + response.error);
         return;
     }
+    
     homeworkData = response;
     updateLastUpdatedTime();
     renderAlertZone(homeworkData);
@@ -23,7 +36,12 @@ function handleResponse(response) {
 }
 
 function showError(message) {
-    document.getElementById('homework-container').innerHTML = `<div class="error">データがよみこめませんでした。: ${message}</div>`;
+    document.getElementById('homework-container').innerHTML = `
+        <div class="error" style="color: #e11d48; padding: 2rem; background: #fff1f2; border-radius: 12px; border: 1px solid #ffe4e6; margin-top: 1rem; text-align: center;">
+            <p style="font-weight: bold; margin: 0 0 0.5rem 0;">⚠️ 読み込みエラー</p>
+            <span style="font-size: 0.85rem; font-weight: normal; line-height: 1.5; color: #475569;">${message}</span>
+        </div>
+    `;
 }
 
 function updateLastUpdatedTime() {
@@ -32,20 +50,19 @@ function updateLastUpdatedTime() {
     document.getElementById('last-updated').textContent = timeString;
 }
 
-// 3. ⚠️ 警告ゾーンの描画（ユーザーが選択した日数に応じて動的変化）
+// 3. ⚠️ 警告ゾーンの描画
 function renderAlertZone(data) {
     const alertContainer = document.getElementById('alert-container');
     const alertTitle = document.getElementById('alert-title');
     alertContainer.innerHTML = '';
 
-    // 💡 タイトルのテキストを選ばれた日数に応じて書き換える
     let labelText = `${targetAlertDays}日以内`;
     if (targetAlertDays === 7) labelText = "1週間以内";
     if (targetAlertDays === 14) labelText = "2週間以内";
     if (targetAlertDays === 21) labelText = "3週間以内";
     if (targetAlertDays === 30) labelText = "1ヶ月以内";
     
-    alertTitle.textContent = `もうすぐしめきり！（${labelText}）`;
+    alertTitle.textContent = `🔥 もうすぐしめきり！（${labelText}）`;
 
     const now = new Date();
     const alerts = [];
@@ -56,7 +73,6 @@ function renderAlertZone(data) {
         const timeDiff = deadlineDate - now;
         const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-        // 💡 設定された日数（targetAlertDays）以内のものを抽出
         if (daysDiff >= 0 && daysDiff <= targetAlertDays) {
             alerts.push({ ...item, daysDiff });
         }
@@ -82,10 +98,9 @@ function renderAlertZone(data) {
     });
 }
 
-// 💡 日数しぼりこみが切り替わった時の処理
 function changeAlertDays(days) {
     targetAlertDays = parseInt(days, 10);
-    renderAlertZone(homeworkData); // 警告エリアだけを即座に再レンダリング
+    renderAlertZone(homeworkData); 
 }
 
 // 4. メイン宿題カードの描画
@@ -93,22 +108,33 @@ function renderCards(data) {
     const container = document.getElementById('homework-container');
     container.innerHTML = '';
 
-    if (data.length === 0) {
-        container.innerHTML = '<div class="loading">だされている宿題はありません！</div>';
+    if (!data || data.length === 0) {
+        container.innerHTML = '<div class="loading" style="color: #94a3b8; padding: 4rem 1rem;">出されている宿題はありません！🎉</div>';
         return;
     }
+
+    const now = new Date();
 
     data.forEach(item => {
         const card = document.createElement('div');
         card.className = 'card';
         card.setAttribute('data-subject-card', item.subject);
 
+        let isUrgent = false;
+        if (item.deadline) {
+            const deadlineDate = new Date(item.deadline);
+            const daysDiff = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
+            if (daysDiff >= 0 && daysDiff <= 3) {
+                isUrgent = true;
+            }
+        }
+
         const formattedDate = item.deadline ? item.deadline.replace(/^\d{4}-/, '').replace('-', '/') : '未定';
 
         card.innerHTML = `
-            <div class="card-header">
+            <div class="card-header" data-urgent="${isUrgent}">
                 <span class="subject-badge" data-subject="${item.subject}">${item.subject}</span>
-                <span class="deadline">しめきり: ${formattedDate}</span>
+                <span class="deadline">⌛ しめきり: ${formattedDate}</span>
             </div>
             <div class="card-body">
                 <p class="range">${item.range}</p>
