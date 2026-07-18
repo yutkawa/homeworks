@@ -1,33 +1,104 @@
+/* 全体のフォントと背景のブラッシュアップ */
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f0f3f6;
-    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    background-color: #f4f7f9;
+    color: #2c3e50;
     margin: 0;
     padding: 0;
     line-height: 1.6;
 }
 
 header {
-    background: linear-gradient(135deg, #4a90e2, #357abd);
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: white;
     text-align: center;
-    padding: 2rem 1rem;
+    padding: 2.5rem 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 header h1 {
     margin: 0;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
 }
 
 .update-info {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin: 0.5rem 0 0 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin: 0.6rem 0 0 0;
+    background: rgba(255,255,255,0.15);
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
 }
 
-/* ⚠️ 追加：2週間前警告ゾーン */
+/* 📂 教科別ボタンの並び（横スクロール可能） */
+.filter-headline {
+    max-width: 550px;
+    margin: 1.5rem auto 0.6rem auto;
+    padding: 0 1rem;
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: bold;
+}
+
+.subject-nav {
+    max-width: 550px;
+    margin: 0 auto;
+    padding: 0.2rem 1rem;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+}
+
+.subject-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* ボタンの共通デザイン */
+.nav-btn {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    color: #475569;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    transition: all 0.2s ease;
+}
+
+/* 🎨 各教科の「アクティブ（選択時）」の色をリスト化 */
+.nav-btn[data-subject="すべて"].active { background-color: #64748b; border-color: #64748b; color: white; }
+.nav-btn[data-subject="国語"].active { background-color: #e53e3e; border-color: #e53e3e; color: white; }
+.nav-btn[data-subject="数学"].active { background-color: #3182ce; border-color: #3182ce; color: white; }
+.nav-btn[data-subject="社会"].active { background-color: #d69e2e; border-color: #d69e2e; color: white; }
+.nav-btn[data-subject="理科"].active { background-color: #38a169; border-color: #38a169; color: white; }
+.nav-btn[data-subject="英語"].active { background-color: #dd6b20; border-color: #dd6b20; color: white; }
+.nav-btn[data-subject="技術"].active { background-color: #8b5a2b; border-color: #8b5a2b; color: white; }
+.nav-btn[data-subject="家庭"].active { background-color: #a0522d; border-color: #a0522d; color: white; }
+.nav-btn[data-subject="音楽"].active { background-color: #1a202c; border-color: #1a202c; color: white; }
+.nav-btn[data-subject="美術"].active { background-color: #805ad5; border-color: #805ad5; color: white; }
+
+/* 🎨 宿題カード内の「教科バッジ」の色も自動で連動させます */
+.subject-badge[data-subject="国語"] { background-color: #e53e3e; }
+.subject-badge[data-subject="数学"] { background-color: #3182ce; }
+.subject-badge[data-subject="社会"] { background-color: #d69e2e; color: #fff; }
+.subject-badge[data-subject="理科"] { background-color: #38a169; }
+.subject-badge[data-subject="英語"] { background-color: #dd6b20; }
+.subject-badge[data-subject="技術"] { background-color: #8b5a2b; }
+.subject-badge[data-subject="家庭"] { background-color: #a0522d; }
+.subject-badge[data-subject="音楽"] { background-color: #1a202c; }
+.subject-badge[data-subject="美術"] { background-color: #805ad5; }
+.subject-badge { background-color: #64748b; color: white; padding: 0.25rem 0.7rem; border-radius: 6px; font-weight: bold; font-size: 0.85rem; }
+
+/* ⚠️ 2週間前警告ゾーン */
 .alert-zone {
-    max-width: 500px;
+    max-width: 550px;
     margin: 1.5rem auto 0 auto;
     padding: 0 1rem;
     box-sizing: border-box;
@@ -35,30 +106,43 @@ header h1 {
 
 .alert-zone h2 {
     font-size: 1rem;
-    color: #e74c3c;
-    margin: 0 0 0.5rem 0;
+    color: #e53e3e;
+    margin: 0 0 0.6rem 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .alert-card {
-    background: #fdf2f2;
-    border: 1px solid #f8b4b4;
-    padding: 0.8rem;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    padding: 0.9rem;
+    border-radius: 12px;
+    margin-bottom: 0.6rem;
     display: flex;
     align-items: center;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 4px rgba(229, 62, 62, 0.05);
 }
 
 .alert-badge {
-    background: #e74c3c;
     color: white;
-    padding: 0.1rem 0.4rem;
-    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 12px;
     font-size: 0.8rem;
 }
+/* 警告内のバッジカラーも定義 */
+.alert-badge[data-subject="国語"] { background-color: #e53e3e; }
+.alert-badge[data-subject="数学"] { background-color: #3182ce; }
+.alert-badge[data-subject="社会"] { background-color: #d69e2e; }
+.alert-badge[data-subject="理科"] { background-color: #38a169; }
+.alert-badge[data-subject="英語"] { background-color: #dd6b20; }
+.alert-badge[data-subject="技術"] { background-color: #8b5a2b; }
+.alert-badge[data-subject="家庭"] { background-color: #a0522d; }
+.alert-badge[data-subject="音楽"] { background-color: #1a202c; }
+.alert-badge[data-subject="美術"] { background-color: #805ad5; }
 
 .alert-range {
     font-weight: bold;
@@ -69,57 +153,17 @@ header h1 {
 }
 
 .alert-days {
-    color: #e74c3c;
+    color: #e53e3e;
     font-weight: bold;
-}
-
-/* 📂 追加：教科別ボタンナビゲーション */
-.filter-headline {
-    max-width: 500px;
-    margin: 1.5rem auto 0.5rem auto;
-    padding: 0 1rem;
+    background: #ffe3e3;
+    padding: 0.1rem 0.5rem;
+    border-radius: 12px;
     font-size: 0.85rem;
-    color: #666;
-    font-weight: bold;
 }
 
-.subject-nav {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto; /* スマホでボタンがはみ出たら横スクロールできるようにする */
-    white-space: nowrap;
-    box-sizing: border-box;
-}
-
-/* スクロールバー非表示（綺麗に見せるため） */
-.subject-nav::-webkit-scrollbar {
-    display: none;
-}
-
-.nav-btn {
-    background: white;
-    border: 1px solid #cbd5e1;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: #4a5568;
-    transition: all 0.2s;
-}
-
-.nav-btn.active {
-    background: #4a90e2;
-    color: white;
-    border-color: #4a90e2;
-}
-
-/* 宿題カード */
+/* 宿題カードの立体感と美しさの向上 */
 main {
-    max-width: 500px;
+    max-width: 550px;
     margin: 1rem auto;
     padding: 0 1rem;
     box-sizing: border-box;
@@ -127,65 +171,60 @@ main {
 
 .card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(148, 163, 184, 0.08);
     margin-bottom: 1.2rem;
     overflow: hidden;
-    border: 1px solid #e1e8ed;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    transition: transform 0.2s ease;
 }
 
 .card-header {
-    background-color: #fafbfc;
-    padding: 0.8rem 1rem;
-    border-bottom: 1px solid #e1e8ed;
+    background-color: #f8fafc;
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid #edf2f7;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.subject-badge {
-    background-color: #4a90e2;
-    color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 0.9rem;
-}
-
 .deadline {
     font-size: 0.85rem;
-    color: #e74c3c;
+    color: #e53e3e;
     font-weight: bold;
 }
 
 .card-body {
-    padding: 1rem;
+    padding: 1.2rem;
 }
 
 .range {
-    font-size: 1.15rem;
-    font-weight: bold;
-    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.6rem 0;
+    color: #1e293b;
 }
 
 .notes {
-    font-size: 0.85rem;
-    color: #666;
-    background-color: #f8f9fa;
-    padding: 0.5rem;
-    border-left: 3px solid #cbd5e1;
+    font-size: 0.9rem;
+    color: #475569;
+    background-color: #f1f5f9;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    border-left: 4px solid #94a3b8;
     margin: 0;
 }
 
 .loading, .error {
     text-align: center;
-    color: #666;
-    padding: 2rem;
+    color: #64748b;
+    padding: 3rem 1rem;
+    font-weight: bold;
 }
 
 footer {
     text-align: center;
-    color: #999;
-    font-size: 0.8rem;
-    padding: 2rem 1rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    padding: 2.5rem 1rem;
 }
