@@ -7,14 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 💡 headerに id="js-header" を追加しました -->
-    <header id="js-header">
+    <!-- 1. ヘッダー：開いた瞬間から絶対表示（ボタンと連動して色が変わります） -->
+    <header id="js-header" data-subject="すべて">
         <h1>✏️ 1-D 宿題連絡板</h1>
         <p class="update-info">最終更新日: <span id="js-update">読み込み中...</span></p>
     </header>
 
     <div class="filter-headline">教科を選んでね</div>
     
+    <!-- 2. 教科切り替えボタン -->
     <nav class="subject-nav">
         <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
         <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
@@ -28,11 +29,13 @@
         <button class="nav-btn" data-subject="美術" onclick="filterSubject('美術')">美術</button>
     </nav>
 
+    <!-- 3. 2週間前警告ゾーン：データ受信後に必要なら自動出現 -->
     <div id="js-alert-container" class="alert-zone" style="display: none;">
         <h2>⚠️ 提出期限が2週間以内の宿題！</h2>
         <div id="js-alert-list"></div>
     </div>
 
+    <!-- 4. メインコンテンツ：カードが並ぶエリア -->
     <main id="js-homework-container">
         <p class="loading">スプレッドシートから宿題データを読み込み中...</p>
     </main>
@@ -47,6 +50,7 @@
         let allHomework = [];
         let currentFilter = 'すべて';
 
+        // スプレッドシートからのデータ読み込み
         async function loadHomework() {
             try {
                 const response = await fetch(GAS_URL);
@@ -67,6 +71,7 @@
             }
         }
 
+        // 提出期限の2週間前チェック機能
         function checkUrgentHomework() {
             const alertContainer = document.getElementById('js-alert-container');
             const alertList = document.getElementById('js-alert-list');
@@ -109,6 +114,7 @@
             }
         }
 
+        // カード描画機能
         function renderHomework(targetSubject) {
             const container = document.getElementById('js-homework-container');
             
@@ -143,11 +149,12 @@
             });
         }
 
+        // ボタンクリック時の連動処理
         function filterSubject(subject) {
             currentFilter = subject;
             renderHomework(subject);
             
-            // 💡 ヘッダーの data-subject 属性を書き換えて色を連動させる
+            // 💡 ヘッダーのデータ属性を書き換えて、CSSの色変更を発動させる
             document.getElementById('js-header').setAttribute('data-subject', subject);
             
             const buttons = document.querySelectorAll('.nav-btn');
