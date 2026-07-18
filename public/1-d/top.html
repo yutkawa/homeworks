@@ -7,30 +7,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 1. ヘッダー（ここまでは最初から絶対に出る） -->
     <header>
         <h1>✏️ 1-D 宿題連絡板</h1>
         <p class="update-info">最終更新日: <span id="js-update">読み込み中...</span></p>
     </header>
 
-    <!-- 2. 教科切り替えボタン（データ読み込みを待たずに、開いた瞬間から絶対に表示されます） -->
     <div class="filter-headline">教科を選んでね</div>
+    
+    <!-- 💡 ボタンエリア：各ボタンに、下のカラーリストに対応する data-subject 属性を付けました -->
     <nav class="subject-nav">
-        <button class="nav-btn active" onclick="filterSubject('すべて')">すべて</button>
-        <button class="nav-btn" onclick="filterSubject('国語')">国語</button>
-        <button class="nav-btn" onclick="filterSubject('数学')">数学</button>
-        <button class="nav-btn" onclick="filterSubject('英語')">英語</button>
-        <button class="nav-btn" onclick="filterSubject('理科')">理科</button>
-        <button class="nav-btn" onclick="filterSubject('社会')">社会</button>
+        <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
+        <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
+        <button class="nav-btn" data-subject="数学" onclick="filterSubject('数学')">数学</button>
+        <button class="nav-btn" data-subject="社会" onclick="filterSubject('社会')">社会</button>
+        <button class="nav-btn" data-subject="理科" onclick="filterSubject('理科')">理科</button>
+        <button class="nav-btn" data-subject="英語" onclick="filterSubject('英語')">英語</button>
+        <button class="nav-btn" data-subject="技術" onclick="filterSubject('技術')">技術</button>
+        <button class="nav-btn" data-subject="家庭" onclick="filterSubject('家庭')">家庭</button>
+        <button class="nav-btn" data-subject="音楽" onclick="filterSubject('音楽')">音楽</button>
+        <button class="nav-btn" data-subject="美術" onclick="filterSubject('美術')">美術</button>
     </nav>
 
-    <!-- 3. 2週間前警告ゾーン（最初は隠しておき、データが来たら必要に応じて出現） -->
     <div id="js-alert-container" class="alert-zone" style="display: none;">
         <h2>⚠️ 提出期限が2週間以内の宿題！</h2>
         <div id="js-alert-list"></div>
     </div>
 
-    <!-- 4. メインコンテンツ（ここだけがデータの読み込みに合わせて変化） -->
     <main id="js-homework-container">
         <p class="loading">スプレッドシートから宿題データを読み込み中...</p>
     </main>
@@ -42,27 +44,22 @@
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbyJgbQJZQDMNt_PqSg6VdpXhrJJHKKpzEKa8Sx5KU4TjF80gLDDbr0mUxhcNf8AUi1p1g/exec"; 
         
-        let allHomework = []; // 全データを保存する変数
-        let currentFilter = 'すべて'; // 現在選んでいる教科
+        let allHomework = [];
+        let currentFilter = 'すべて';
 
-        // ページを開いた瞬間に、まず通信（データ取得）を開始する
         async function loadHomework() {
             try {
                 const response = await fetch(GAS_URL);
                 if (!response.ok) throw new Error('データの取得に失敗しました');
                 
                 const data = await response.json();
-                
-                // データが届いたら、最終更新日を書き換える
                 document.getElementById('js-update').textContent = data.last_update;
                 allHomework = data.homework_list || [];
                 
-                // 2週間前チェックを実行し、画面に宿題カードを描く
                 checkUrgentHomework();
                 renderHomework(currentFilter);
 
             } catch (error) {
-                // 通信エラーが起きたら、メインの読み込み中だった部分にだけエラーを出す（ボタンは消えない）
                 document.getElementById('js-update').textContent = "エラー";
                 document.getElementById('js-homework-container').innerHTML = 
                     `<p class="error">エラー: スプレッドシートからのデータ読み込みに失敗しました。</p>`;
@@ -70,7 +67,6 @@
             }
         }
 
-        // 提出期限が2週間以内か判定してトップに出す機能
         function checkUrgentHomework() {
             const alertContainer = document.getElementById('js-alert-container');
             const alertList = document.getElementById('js-alert-list');
@@ -83,7 +79,6 @@
                 if (!item.deadline) return;
 
                 let deadlineDate = new Date(item.deadline);
-                
                 if (isNaN(deadlineDate.getTime())) {
                     const match = item.deadline.match(/(\d+)月(\d+)日/);
                     if (match) {
@@ -99,10 +94,11 @@
                         hasUrgent = true;
                         const alertCard = document.createElement('div');
                         alertCard.className = 'alert-card';
+                        // 警告欄のバッジも教科ごとの色になるよう data-subject を付与
                         alertCard.innerHTML = `
-                            <span class="alert-badge">${item.subject}</span>
+                            <span class="alert-badge" data-subject="${item.subject}">${item.subject}</span>
                             <span class="alert-range">${item.range}</span>
-                            <span class="alert-days">（あと ${daysDiff} 日！）</span>
+                            <span class="alert-days">あと ${daysDiff} 日！</span>
                         `;
                         alertList.appendChild(alertCard);
                     }
@@ -114,11 +110,9 @@
             }
         }
 
-        // 宿題カードを画面に描く機能
         function renderHomework(targetSubject) {
             const container = document.getElementById('js-homework-container');
             
-            // まだデータが届いていない状態でボタンが押された場合
             if (allHomework.length === 0 && document.getElementById('js-update').textContent === "読み込み中...") {
                 container.innerHTML = `<p class="loading">データを受信しています。少々お待ちください...</p>`;
                 return;
@@ -136,10 +130,11 @@
             filtered.forEach(item => {
                 const card = document.createElement('section');
                 card.className = 'card';
+                // 宿題カードのバッジに data-subject を設定してCSSと連動させます
                 card.innerHTML = `
                     <div class="card-header">
-                        <span class="subject-badge">${item.subject || '未設定'}</span>
-                        <span class="deadline">${item.deadline ? `提出期限: ${item.deadline}` : ''}</span>
+                        <span class="subject-badge" data-subject="${item.subject || '未設定'}">${item.subject || '未設定'}</span>
+                        <span class="deadline">${item.deadline ? `⏳ 提出期限: ${item.deadline}` : ''}</span>
                     </div>
                     <div class="card-body">
                         <p class="range">${item.range || '範囲未入力'}</p>
@@ -150,15 +145,13 @@
             });
         }
 
-        // ボタンが押された時の処理
         function filterSubject(subject) {
-            currentFilter = subject; // 選択中の教科を記憶
+            currentFilter = subject;
             renderHomework(subject);
             
-            // ボタンの見た目（アクティブ色）を切り替え
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => {
-                if (btn.textContent === subject) {
+                if (btn.getAttribute('data-subject') === subject) {
                     btn.classList.add('active');
                 } else {
                     btn.classList.remove('active');
@@ -166,7 +159,6 @@
             });
         }
 
-        // ページが表示されたらすぐに実行
         window.addEventListener('DOMContentLoaded', loadHomework);
     </script>
 </body>
