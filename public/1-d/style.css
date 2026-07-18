@@ -25,10 +25,104 @@ header h1 {
     margin: 0.5rem 0 0 0;
 }
 
+/* ⚠️ 追加：2週間前警告ゾーン */
+.alert-zone {
+    max-width: 500px;
+    margin: 1.5rem auto 0 auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.alert-zone h2 {
+    font-size: 1rem;
+    color: #e74c3c;
+    margin: 0 0 0.5rem 0;
+}
+
+.alert-card {
+    background: #fdf2f2;
+    border: 1px solid #f8b4b4;
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.alert-badge {
+    background: #e74c3c;
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 0.8rem;
+}
+
+.alert-range {
+    font-weight: bold;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.alert-days {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* 📂 追加：教科別ボタンナビゲーション */
+.filter-headline {
+    max-width: 500px;
+    margin: 1.5rem auto 0.5rem auto;
+    padding: 0 1rem;
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: bold;
+}
+
+.subject-nav {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto; /* スマホでボタンがはみ出たら横スクロールできるようにする */
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+/* スクロールバー非表示（綺麗に見せるため） */
+.subject-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-btn {
+    background: white;
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #4a5568;
+    transition: all 0.2s;
+}
+
+.nav-btn.active {
+    background: #4a90e2;
+    color: white;
+    border-color: #4a90e2;
+}
+
+/* 宿題カード */
 main {
     max-width: 500px;
-    margin: 1.5rem auto;
+    margin: 1rem auto;
     padding: 0 1rem;
+    box-sizing: border-box;
 }
 
 .card {
