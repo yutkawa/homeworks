@@ -12,6 +12,23 @@
         <p class="update-info">最終更新日: <span id="js-update">--/--</span></p>
     </header>
 
+    <!-- 💡 追加：提出期限が2週間前の宿題を自動で警告するエリア -->
+    <div id="js-alert-container" class="alert-zone" style="display: none;">
+        <h2>⚠️ 提出期限が2週間以内の宿題！</h2>
+        <div id="js-alert-list"></div>
+    </div>
+
+    <!-- 💡 追加：教科ごとに切り替えるボタンエリア -->
+    <div class="filter-headline">教科を選んでね</div>
+    <nav class="subject-nav">
+        <button class="nav-btn active" onclick="filterSubject('すべて')">すべて</button>
+        <button class="nav-btn" onclick="filterSubject('国語')">国語</button>
+        <button class="nav-btn" onclick="filterSubject('数学')">数学</button>
+        <button class="nav-btn" onclick="filterSubject('英語')">英語</button>
+        <button class="nav-btn" onclick="filterSubject('理科')">理科</button>
+        <button class="nav-btn" onclick="filterSubject('社会')">社会</button>
+    </nav>
+
     <main id="js-homework-container">
         <p class="loading">スプレッドシートから宿題データを読み込み中...</p>
     </main>
@@ -21,54 +38,124 @@
     </footer>
 
     <script>
-        // あなたが発行したGoogle Apps Script (GAS) のURL
         const GAS_URL = "https://script.google.com/macros/s/AKfycbyJgbQJZQDMNt_PqSg6VdpXhrJJHKKpzEKa8Sx5KU4TjF80gLDDbr0mUxhcNf8AUi1p1g/exec"; 
+        
+        let allHomework = []; // 全データを一時保存する変数
 
         async function loadHomework() {
             try {
-                // GASのURLからデータを引っ張ってくる
                 const response = await fetch(GAS_URL);
                 if (!response.ok) throw new Error('データの取得に失敗しました');
                 
                 const data = await response.json();
-                
-                // 最終更新日時を画面に表示
                 document.getElementById('js-update').textContent = data.last_update;
                 
-                const container = document.getElementById('js-homework-container');
-                container.innerHTML = ''; // ローディング文字を消す
-
-                // もし宿題データが一件もない場合
-                if(!data.homework_list || data.homework_list.length === 0) {
-                    container.innerHTML = '<p class="loading">現在、登録されている宿題はありません。🎉</p>';
-                    return;
-                }
-
-                // スプレッドシートにある宿題の数だけカードを作って並べる
-                data.homework_list.forEach(item => {
-                    const card = document.createElement('section');
-                    card.className = 'card';
-                    card.innerHTML = `
-                        <div class="card-header">
-                            <span class="subject-badge">${item.subject || '未設定'}</span>
-                            <span class="deadline">${item.deadline ? `提出期限: ${item.deadline}` : ''}</span>
-                        </div>
-                        <div class="card-body">
-                            <p class="range">${item.range || '範囲未入力'}</p>
-                            ${item.notes ? `<p class="notes">💡 注意: ${item.notes}</p>` : ''}
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
+                allHomework = data.homework_list || [];
+                
+                // 2週間前チェックと全体の描画を実行
+                checkUrgentHomework();
+                renderHomework('すべて');
 
             } catch (error) {
                 document.getElementById('js-homework-container').innerHTML = 
-                    `<p class="error">エラー: スプレッドシートからのデータ読み込みに失敗しました。GASの設定（アクセス権限を全員にする等）を確認してください。</p>`;
+                    `<p class="error">エラー: データの読み込みに失敗しました。</p>`;
                 console.error(error);
             }
         }
 
-        // ページが表示されたら自動で読み込みを開始する
+        // 💡 提出期限が2週間以内か判定してトップに出す機能
+        function checkUrgentHomework() {
+            const alertContainer = document.getElementById('js-alert-container');
+            const alertList = document.getElementById('js-alert-list');
+            alertList.innerHTML = '';
+            
+            const today = new Date();
+            let hasUrgent = false;
+
+            allHomework.forEach(item => {
+                if (!item.deadline) return;
+
+                // スプレッドシートの期限（例: "2026/07/24" または "7月24日"）を日付に変換を試みる
+                // ※ 正確に判定するため、スプレッドシートの期限欄には「2026/07/24」のように西暦で書くのがおすすめです。
+                let deadlineDate = new Date(item.deadline);
+                
+                // もし「7月24日」のように年がない形式なら今年の年を補う
+                if (isNaN(deadlineDate.getTime())) {
+                    const match = item.deadline.match(/(\d+)月(\d+)日/);
+                    if (match) {
+                        deadlineDate = new Date(today.getFullYear(), parseInt(match[1]) - 1, parseInt(match[2]));
+                    }
+                }
+
+                if (!isNaN(deadlineDate.getTime())) {
+                    // あと何日あるか計算
+                    const timeDiff = deadlineDate.getTime() - today.getTime();
+                    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                    // 期限まで0日以上14日以内の場合、警告エリアに追加
+                    if (daysDiff >= 0 && daysDiff <= 14) {
+                        hasUrgent = true;
+                        const alertCard = document.createElement('div');
+                        alertCard.className = 'alert-card';
+                        alertCard.innerHTML = `
+                            <span class="alert-badge">${item.subject}</span>
+                            <span class="alert-range">${item.range}</span>
+                            <span class="alert-days">（あと ${daysDiff} 日！）</span>
+                        `;
+                        alertList.appendChild(alertCard);
+                    }
+                }
+            });
+
+            if (hasUrgent) {
+                alertContainer.style.display = 'block';
+            }
+        }
+
+        // 💡 教科ごとに表示を切り替える機能
+        function renderHomework(targetSubject) {
+            const container = document.getElementById('js-homework-container');
+            container.innerHTML = '';
+
+            // 選んだ教科だけに絞り込む（「すべて」なら全部）
+            const filtered = allHomework.filter(item => targetSubject === 'すべて' || item.subject === targetSubject);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="loading">現在、「${targetSubject}」の登録されている宿題はありません。🎉</p>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('section');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="subject-badge">${item.subject || '未設定'}</span>
+                        <span class="deadline">${item.deadline ? `提出期限: ${item.deadline}` : ''}</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="range">${item.range || '範囲未入力'}</p>
+                        ${item.notes ? `<p class="notes">💡 注意: ${item.notes}</p>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ボタンの「色（アクティブ状態）」を変えて、中身を切り替える
+        function filterSubject(subject) {
+            renderHomework(subject);
+            
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent === subject) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
         window.addEventListener('DOMContentLoaded', loadHomework);
     </script>
 </body>
