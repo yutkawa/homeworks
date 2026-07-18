@@ -34,14 +34,13 @@ header h1 {
     border-radius: 20px;
 }
 
-/* 🎨 ヘッダーが教科ごとに変身する設定（!importantを付けて強制適用） */
+/* 🎨 ヘッダーが教科ごとに変身する設定（技術・家庭を統合） */
 header[data-subject="国語"] { background: linear-gradient(135deg, #e53e3e, #b83232) !important; }
 header[data-subject="数学"] { background: linear-gradient(135deg, #3182ce, #2b6cb0) !important; }
 header[data-subject="社会"] { background: linear-gradient(135deg, #d69e2e, #b7791f) !important; }
 header[data-subject="理科"] { background: linear-gradient(135deg, #38a169, #2f855a) !important; }
 header[data-subject="英語"] { background: linear-gradient(135deg, #dd6b20, #c05621) !important; }
-header[data-subject="技術"] { background: linear-gradient(135deg, #8b5a2b, #6e4722) !important; }
-header[data-subject="家庭"] { background: linear-gradient(135deg, #a0522d, #804124) !important; }
+header[data-subject="技術・家庭"] { background: linear-gradient(135deg, #a0522d, #70361c) !important; }
 header[data-subject="音楽"] { background: linear-gradient(135deg, #1a202c, #2d3748) !important; }
 header[data-subject="美術"] { background: linear-gradient(135deg, #805ad5, #6b46c1) !important; }
 
@@ -96,8 +95,7 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #805ad5, #6b
 .nav-btn[data-subject="社会"].active { background-color: #d69e2e; border-color: #d69e2e; color: white; }
 .nav-btn[data-subject="理科"].active { background-color: #38a169; border-color: #38a169; color: white; }
 .nav-btn[data-subject="英語"].active { background-color: #dd6b20; border-color: #dd6b20; color: white; }
-.nav-btn[data-subject="技術"].active { background-color: #8b5a2b; border-color: #8b5a2b; color: white; }
-.nav-btn[data-subject="家庭"].active { background-color: #a0522d; border-color: #a0522d; color: white; }
+.nav-btn[data-subject="技術・家庭"].active { background-color: #a0522d; border-color: #a0522d; color: white; }
 .nav-btn[data-subject="音楽"].active { background-color: #1a202c; border-color: #1a202c; color: white; }
 .nav-btn[data-subject="美術"].active { background-color: #805ad5; border-color: #805ad5; color: white; }
 
@@ -107,8 +105,7 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #805ad5, #6b
 .subject-badge[data-subject="社会"] { background-color: #d69e2e; color: #fff; }
 .subject-badge[data-subject="理科"] { background-color: #38a169; }
 .subject-badge[data-subject="英語"] { background-color: #dd6b20; }
-.subject-badge[data-subject="技術"] { background-color: #8b5a2b; }
-.subject-badge[data-subject="家庭"] { background-color: #a0522d; }
+.subject-badge[data-subject="技術・家庭"] { background-color: #a0522d; }
 .subject-badge[data-subject="音楽"] { background-color: #1a202c; }
 .subject-badge[data-subject="美術"] { background-color: #805ad5; }
 .subject-badge { background-color: #64748b; color: white; padding: 0.25rem 0.7rem; border-radius: 6px; font-weight: bold; font-size: 0.85rem; }
@@ -154,8 +151,7 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #805ad5, #6b
 .alert-badge[data-subject="社会"] { background-color: #d69e2e; }
 .alert-badge[data-subject="理科"] { background-color: #38a169; }
 .alert-badge[data-subject="英語"] { background-color: #dd6b20; }
-.alert-badge[data-subject="技術"] { background-color: #8b5a2b; }
-.alert-badge[data-subject="家庭"] { background-color: #a0522d; }
+.alert-badge[data-subject="技術・家庭"] { background-color: #a0522d; }
 .alert-badge[data-subject="音楽"] { background-color: #1a202c; }
 .alert-badge[data-subject="美術"] { background-color: #805ad5; }
 
