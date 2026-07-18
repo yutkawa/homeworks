@@ -3,33 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1-D 宿題連絡サイト</title>
-    <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f7fa; color: #333; text-align: center; }
-        h1 { color: #2c3e50; margin-bottom: 30px; }
-        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
-        .menu-btn { display: block; padding: 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #3182ce; transition: transform 0.2s; }
-        .menu-btn:hover { transform: translateY(-2px); background: #edf2f7; }
-        .menu-btn.other { grid-column: span 2; border-left-color: #718096; }
-    </style>
+    <title>1-D 宿題一覧</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <h1>✏️ 1-D 宿題連絡板</h1>
+        <p class="update-info">最終更新日: <span id="js-update">--/--</span></p>
+    </header>
 
-    <h1>📄 1-D 宿題連絡サイト</h1>
-    <p>確認したい教科を選択してください。専用ページに移動します。</p>
+    <main id="js-homework-container">
+        <p class="loading">スプレッドシートから宿題データを読み込み中...</p>
+    </main>
 
-    <div class="menu-grid">
-        <a href="./subjects/japanese.html" class="menu-btn">📝 国語</a>
-        <a href="./subjects/math.html" class="menu-btn">📐 数学</a>
-        <a href="./subjects/english.html" class="menu-btn">📘 英語</a>
-        <a href="./subjects/science.html" class="menu-btn">🧪 理科</a>
-        <a href="./subjects/social.html" class="menu-btn">🗺️ 社会</a>
-        <a href="./subjects/art.html" class="menu-btn">🖼️ 美術</a>
-        <a href="./subjects/music.html" class="menu-btn">🎵 音楽</a>
-        <a href="./subjects/tech.html" class="menu-btn">🛠️ 技術</a>
-        <a href="./subjects/home.html" class="menu-btn">🍳 家庭科</a>
-        <a href="./subjects/other.html" class="menu-btn_other menu-btn">🔔 その他（学活・全体連絡）</a>
-    </div>
+    <footer>
+        <p>© 2026 1-D Homework Board</p>
+    </footer>
 
+    <script>
+        // あなたが発行したGoogle Apps Script (GAS) のURL
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyJgbQJZQDMNt_PqSg6VdpXhrJJHKKpzEKa8Sx5KU4TjF80gLDDbr0mUxhcNf8AUi1p1g/exec"; 
+
+        async function loadHomework() {
+            try {
+                // GASのURLからデータを引っ張ってくる
+                const response = await fetch(GAS_URL);
+                if (!response.ok) throw new Error('データの取得に失敗しました');
+                
+                const data = await response.json();
+                
+                // 最終更新日時を画面に表示
+                document.getElementById('js-update').textContent = data.last_update;
+                
+                const container = document.getElementById('js-homework-container');
+                container.innerHTML = ''; // ローディング文字を消す
+
+                // もし宿題データが一件もない場合
+                if(!data.homework_list || data.homework_list.length === 0) {
+                    container.innerHTML = '<p class="loading">現在、登録されている宿題はありません。🎉</p>';
+                    return;
+                }
+
+                // スプレッドシートにある宿題の数だけカードを作って並べる
+                data.homework_list.forEach(item => {
+                    const card = document.createElement('section');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <span class="subject-badge">${item.subject || '未設定'}</span>
+                            <span class="deadline">${item.deadline ? `提出期限: ${item.deadline}` : ''}</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="range">${item.range || '範囲未入力'}</p>
+                            ${item.notes ? `<p class="notes">💡 注意: ${item.notes}</p>` : ''}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                document.getElementById('js-homework-container').innerHTML = 
+                    `<p class="error">エラー: スプレッドシートからのデータ読み込みに失敗しました。GASの設定（アクセス権限を全員にする等）を確認してください。</p>`;
+                console.error(error);
+            }
+        }
+
+        // ページが表示されたら自動で読み込みを開始する
+        window.addEventListener('DOMContentLoaded', loadHomework);
+    </script>
 </body>
 </html>
