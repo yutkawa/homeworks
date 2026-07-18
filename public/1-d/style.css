@@ -8,12 +8,14 @@ body {
     line-height: 1.6;
 }
 
+/* 💡 初期状態（すべての時）のヘッダーデザイン */
 header {
     background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: white;
     text-align: center;
     padding: 2.5rem 1rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: background 0.4s ease; /* 色がじわっと優しく変わる魔法の効果 */
 }
 
 header h1 {
@@ -31,6 +33,18 @@ header h1 {
     padding: 0.2rem 0.8rem;
     border-radius: 20px;
 }
+
+/* 🎨【新機能】ヘッダーが教科ごとに変身するグラデーション色リスト */
+header[data-subject="国語"] { background: linear-gradient(135deg, #e53e3e, #b83232); }
+header[data-subject="数学"] { background: linear-gradient(135deg, #3182ce, #2b6cb0); }
+header[data-subject="社会"] { background: linear-gradient(135deg, #d69e2e, #b7791f); }
+header[data-subject="理科"] { background: linear-gradient(135deg, #38a169, #2f855a); }
+header[data-subject="英語"] { background: linear-gradient(135deg, #dd6b20, #c05621); }
+header[data-subject="技術"] { background: linear-gradient(135deg, #8b5a2b, #6e4722); }
+header[data-subject="家庭"] { background: linear-gradient(135deg, #a0522d, #804124); }
+header[data-subject="音楽"] { background: linear-gradient(135deg, #1a202c, #2d3748); }
+header[data-subject="美術"] { background: linear-gradient(135deg, #805ad5, #6b46c1); }
+
 
 /* 📂 教科別ナビゲーションボタン（横スクロール可） */
 .filter-headline {
@@ -72,12 +86,11 @@ header h1 {
     transition: all 0.2s ease;
 }
 
-/* 💡 タップ・クリックした瞬間の心地よい凹み演出 */
 .nav-btn:active {
     transform: scale(0.95);
 }
 
-/* 🎨 各教科ボタンをクリックした時の専用ハイライト色 */
+/* 各教科ボタンをクリックした時のハイライト色 */
 .nav-btn[data-subject="すべて"].active { background-color: #64748b; border-color: #64748b; color: white; }
 .nav-btn[data-subject="国語"].active { background-color: #e53e3e; border-color: #e53e3e; color: white; }
 .nav-btn[data-subject="数学"].active { background-color: #3182ce; border-color: #3182ce; color: white; }
@@ -89,7 +102,7 @@ header h1 {
 .nav-btn[data-subject="音楽"].active { background-color: #1a202c; border-color: #1a202c; color: white; }
 .nav-btn[data-subject="美術"].active { background-color: #805ad5; border-color: #805ad5; color: white; }
 
-/* 🎨 宿題カード内の「教科バッジ」の背景色 */
+/* 宿題カード内の「教科バッジ」の背景色 */
 .subject-badge[data-subject="国語"] { background-color: #e53e3e; }
 .subject-badge[data-subject="数学"] { background-color: #3182ce; }
 .subject-badge[data-subject="社会"] { background-color: #d69e2e; color: #fff; }
