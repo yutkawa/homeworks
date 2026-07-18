@@ -3,7 +3,7 @@
    ========================================== */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-    background-color: #f7fafc; /* 目に優しい柔らかな白 */
+    background-color: #f7fafc; 
     color: #334155;
     margin: 0;
     padding: 0;
@@ -14,13 +14,11 @@ body {
    ヘッダーデザイン（アニメーション対応）
    ========================================== */
 header {
-    background: #4a7ab5; /* 初期状態（すべて）のパステルライトブルー */
+    background: #4a7ab5; 
     color: white;
     text-align: center;
     padding: 2.5rem 1rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    
-    /* ✨ すべての教科間、および「すべて」に戻る時も一律で0.6秒かけて滑らかに変化 */
     transition: background 0.6s ease-in-out; 
 }
 
@@ -40,7 +38,6 @@ header h1 {
     border-radius: 20px;
 }
 
-/* 🎨 全教科のヘッダーパステルカラー変身設定（少し白を混ぜた淡い色） */
 header[data-subject="国語"] { background: #f26d6d !important; }
 header[data-subject="数学"] { background: #63a4ff !important; }
 header[data-subject="社会"] { background: #f0c24d !important; }
@@ -51,7 +48,7 @@ header[data-subject="音楽"] { background: #4a5568 !important; }
 header[data-subject="美術"] { background: #b08bf0 !important; }
 
 /* ==========================================
-   📂 教科別ナビゲーションボタン（絶対中央寄せ・折り返し）
+   📂 教科別ナビゲーションボタン
    ========================================== */
 .filter-headline {
     text-align: center !important;
@@ -63,18 +60,17 @@ header[data-subject="美術"] { background: #b08bf0 !important; }
 
 .subject-nav {
     display: flex !important;
-    flex-wrap: wrap !important;         /* スマホ画面幅で確実に折り返す */
-    justify-content: center !important;   /* ボタンの集まりを画面のど真ん中に整列 */
+    flex-wrap: wrap !important;         
+    justify-content: center !important;   
     gap: 8px !important;
-    overflow-x: visible !important;     /* 古い横スクロール設定を強制上書き排除 */
-    white-space: normal !important;     /* 横一列への固執を排除 */
+    overflow-x: visible !important;     
+    white-space: normal !important;     
     max-width: 500px;
-    margin: 0 auto 1.5rem auto !important; /* ボタンコンテナ自体も完全中央寄せ */
+    margin: 0 auto 1rem auto !important; 
     padding: 0 1rem;
     box-sizing: border-box;
 }
 
-/* ボタンの通常時 */
 .nav-btn {
     background: #ffffff;
     border: 2px solid #e2e8f0;
@@ -93,7 +89,6 @@ header[data-subject="美術"] { background: #b08bf0 !important; }
     transform: scale(0.95);
 }
 
-/* 各教科ボタンがアクティブ（選択中）の時のパステル背景色 */
 .nav-btn[data-subject="すべて"].active { background-color: #718096; border-color: #718096; color: white; }
 .nav-btn[data-subject="国語"].active { background-color: #f26d6d; border-color: #f26d6d; color: white; }
 .nav-btn[data-subject="数学"].active { background-color: #63a4ff; border-color: #63a4ff; color: white; }
@@ -103,6 +98,34 @@ header[data-subject="美術"] { background: #b08bf0 !important; }
 .nav-btn[data-subject="技術・家庭"].active { background-color: #c28867; border-color: #c28867; color: white; }
 .nav-btn[data-subject="音楽"].active { background-color: #4a5568; border-color: #4a5568; color: white; }
 .nav-btn[data-subject="美術"].active { background-color: #b08bf0; border-color: #b08bf0; color: white; }
+
+/* ==========================================
+   ⏱️ 表示日数しぼりこみメニューのスタイル（中央寄せ）
+   ========================================== */
+.days-filter-container {
+    text-align: center;
+    margin: 0 auto 1.5rem auto;
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: bold;
+}
+
+.days-filter-container select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    border: 2px solid #cbd5e1;
+    background-color: white;
+    color: #1e293b;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.days-filter-container select:focus {
+    border-color: #4a7ab5;
+}
 
 /* ==========================================
    宿題カード内の「教科バッジ」
