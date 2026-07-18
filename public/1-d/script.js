@@ -1,6 +1,6 @@
 let homeworkData = [];
 
-// APIからデータを取得
+// 1. APIから宿題データを取得 (JSONPによるクロスドメイン通信)
 async function fetchHomeworkZone() {
     const jsonpUrl = "https://script.google.com/macros/s/AKfycbygGsnA6-vE9R-v2Vn6_0mB3H2WpM9OQ4_3u_q5x8g/exec?prefix=handleResponse";
     
@@ -9,7 +9,7 @@ async function fetchHomeworkZone() {
     document.body.appendChild(script);
 }
 
-// JSONPのコールバック関数
+// 2. JSONPのデータ受け取り用コールバック関数
 function handleResponse(response) {
     if (response && response.error) {
         showError(response.error);
@@ -21,17 +21,19 @@ function handleResponse(response) {
     renderCards(homeworkData);
 }
 
+// エラー表示処理
 function showError(message) {
     document.getElementById('homework-container').innerHTML = `<div class="error">データがよみこめませんでした。: ${message}</div>`;
 }
 
+// 最終更新時刻の更新
 function updateLastUpdatedTime() {
     const now = new Date();
     const timeString = `${now.getMonth() + 1}/${now.getDate()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     document.getElementById('last-updated').textContent = timeString;
 }
 
-// ⚠️ 2週間前警告ゾーンの描画
+// 3. ⚠️ 2週間前警告ゾーンの自動選別・描画
 function renderAlertZone(data) {
     const alertContainer = document.getElementById('alert-container');
     alertContainer.innerHTML = '';
@@ -45,19 +47,20 @@ function renderAlertZone(data) {
         const timeDiff = deadlineDate - now;
         const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
+        // しめきりまで14日以内の宿題をピックアップ
         if (daysDiff >= 0 && daysDiff <= 14) {
             alerts.push({ ...item, daysDiff });
         }
     });
 
+    // 該当する宿題がなければ非表示
     if (alerts.length === 0) {
         document.getElementById('alert-zone').style.display = 'none';
         return;
     }
 
     document.getElementById('alert-zone').style.display = 'block';
-    
-    // 締切が近い順に並び替え
+    // しめきりが近い順にソート
     alerts.sort((a, b) => a.daysDiff - b.daysDiff);
 
     alerts.forEach(item => {
@@ -72,7 +75,7 @@ function renderAlertZone(data) {
     });
 }
 
-// 宿題カードの描画
+// 4. メイン宿題カードの動的生成
 function renderCards(data) {
     const container = document.getElementById('homework-container');
     container.innerHTML = '';
@@ -85,7 +88,7 @@ function renderCards(data) {
     data.forEach(item => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.setAttribute('data-subject-card', item.subject);
+        card.setAttribute('data-subject-card', item.subject); // 絞り込み用のデータ属性
 
         const formattedDate = item.deadline ? item.deadline.replace(/^\d{4}-/, '').replace('-', '/') : '未定';
 
@@ -103,9 +106,9 @@ function renderCards(data) {
     });
 }
 
-// 📂 教科別フィルター機能
+// 5. 📂 全教科対応・教科別フィルター（絞り込み）機能
 function filterSubject(subject) {
-    // ボタンのactiveクラスの切り替え
+    // ボタンのアクティブ状態を切り替え
     const buttons = document.querySelectorAll('.nav-btn');
     buttons.forEach(btn => {
         if (btn.getAttribute('data-subject') === subject) {
@@ -115,15 +118,15 @@ function filterSubject(subject) {
         }
     });
 
-    // ✨ ヘッダーの色を切り替え（「すべて」の時は属性を消去して初期カラーにフワッと戻す）
-    const header = document.querySelector('header');
+    // ✨ ヘッダーパステルカラーの変更（「すべて」の時は属性を消去して0.6秒フェードアニメを誘発）
+    const header = document.getElementById('page-header');
     if (subject === 'すべて') {
         header.removeAttribute('data-subject');
     } else {
         header.setAttribute('data-subject', subject);
     }
 
-    // 宿題カードの表示・非表示
+    // 宿題カードの表示・非表示コントロール
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         if (subject === 'すべて' || card.getAttribute('data-subject-card') === subject) {
@@ -134,5 +137,5 @@ function filterSubject(subject) {
     });
 }
 
-// 画面読み込み時に実行
+// 画面表示時に初期データを読み込み
 window.onload = fetchHomeworkZone;
