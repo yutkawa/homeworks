@@ -10,12 +10,12 @@
 
     <!-- 🏷️ ヘッダーエリア -->
     <header id="page-header">
-        <h1>1-D 宿題チェッカー</h1>
+        <h1>1-D 宿題公開サイト</h1>
         <p class="update-info">データ更新: <span id="last-updated">--/-- --:--</span></p>
     </header>
 
     <!-- 📂 教科別ナビゲーションボタン -->
-    <p class="filter-headline">教科でしぼりこむ</p>
+    <p class="filter-headline">教科を選択</p>
     <nav class="subject-nav">
         <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
         <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
@@ -42,14 +42,14 @@
 
     <!-- ⚠️ 警告ゾーン（ここのタイトルが選択に合わせて動的に変わります） -->
     <section id="alert-zone" class="alert-zone" style="display: none;">
-        <h2 id="alert-title">もうすぐしめきり！（2週間以内）</h2>
+        <h2 id="alert-title">もうすぐ締め切りです！（2週間以内）</h2>
         <div id="alert-container"></div>
     </section>
 
     <!-- 📋 宿題カードメインエリア -->
     <main>
         <div id="homework-container">
-            <div class="loading">宿題データをよみこんでいます...</div>
+            <div class="loading">宿題データを読み込んでいます...</div>
         </div>
     </main>
 
