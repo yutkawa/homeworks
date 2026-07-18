@@ -15,7 +15,7 @@
 
     <div class="filter-headline">教科を選んでね</div>
     
-    <!-- 2. 教科切り替えボタン -->
+    <!-- 2. 教科切り替えボタン（技術・家庭を統合しました） -->
     <nav class="subject-nav">
         <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
         <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
@@ -23,8 +23,7 @@
         <button class="nav-btn" data-subject="社会" onclick="filterSubject('社会')">社会</button>
         <button class="nav-btn" data-subject="理科" onclick="filterSubject('理科')">理科</button>
         <button class="nav-btn" data-subject="英語" onclick="filterSubject('英語')">英語</button>
-        <button class="nav-btn" data-subject="技術" onclick="filterSubject('技術')">技術</button>
-        <button class="nav-btn" data-subject="家庭" onclick="filterSubject('家庭')">家庭</button>
+        <button class="nav-btn" data-subject="技術・家庭" onclick="filterSubject('技術・家庭')">技術・家庭</button>
         <button class="nav-btn" data-subject="音楽" onclick="filterSubject('音楽')">音楽</button>
         <button class="nav-btn" data-subject="美術" onclick="filterSubject('美術')">美術</button>
     </nav>
@@ -97,10 +96,17 @@
 
                     if (daysDiff >= 0 && daysDiff <= 14) {
                         hasUrgent = true;
+                        
+                        // スプレッドシート側が「技術」や「家庭」単体でも「技術・家庭」として判定
+                        let displaySubject = item.subject;
+                        if (displaySubject === '技術' || displaySubject === '家庭') {
+                            displaySubject = '技術・家庭';
+                        }
+
                         const alertCard = document.createElement('div');
                         alertCard.className = 'alert-card';
                         alertCard.innerHTML = `
-                            <span class="alert-badge" data-subject="${item.subject}">${item.subject}</span>
+                            <span class="alert-badge" data-subject="${displaySubject}">${displaySubject}</span>
                             <span class="alert-range">${item.range}</span>
                             <span class="alert-days">あと ${daysDiff} 日！</span>
                         `;
@@ -125,7 +131,14 @@
 
             container.innerHTML = '';
 
-            const filtered = allHomework.filter(item => targetSubject === 'すべて' || item.subject === targetSubject);
+            // フィルター判定（技術・家庭ボタンが押された時は、データ側が「技術」「家庭」「技術・家庭」のどれでも表示する）
+            const filtered = allHomework.filter(item => {
+                if (targetSubject === 'すべて') return true;
+                if (targetSubject === '技術・家庭') {
+                    return item.subject === '技術' || item.subject === '家庭' || item.subject === '技術・家庭';
+                }
+                return item.subject === targetSubject;
+            });
 
             if (filtered.length === 0) {
                 container.innerHTML = `<p class="loading">現在、「${targetSubject}」の登録されている宿題はありません。🎉</p>`;
@@ -133,11 +146,16 @@
             }
 
             filtered.forEach(item => {
+                let displaySubject = item.subject || '未設定';
+                if (displaySubject === '技術' || displaySubject === '家庭') {
+                    displaySubject = '技術・家庭';
+                }
+
                 const card = document.createElement('section');
                 card.className = 'card';
                 card.innerHTML = `
                     <div class="card-header">
-                        <span class="subject-badge" data-subject="${item.subject || '未設定'}">${item.subject || '未設定'}</span>
+                        <span class="subject-badge" data-subject="${displaySubject}">${displaySubject}</span>
                         <span class="deadline">${item.deadline ? `⏳ 提出期限: ${item.deadline}` : ''}</span>
                     </div>
                     <div class="card-body">
@@ -154,7 +172,7 @@
             currentFilter = subject;
             renderHomework(subject);
             
-            // 💡 ヘッダーのデータ属性を書き換えて、CSSの色変更を発動させる
+            // ヘッダーのデータ属性を書き換えて、CSSの色変更を発動させる
             document.getElementById('js-header').setAttribute('data-subject', subject);
             
             const buttons = document.querySelectorAll('.nav-btn');
