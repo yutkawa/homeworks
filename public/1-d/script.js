@@ -16,12 +16,12 @@ async function fetchHomeworkZone() {
     script.src = jsonpUrl;
     script.onerror = () => {
         clearTimeout(timeoutId);
-        showError("スクリプトの読み込みに失敗しました（URLの形式に問題がある可能性があります）。");
+        showError("スクリプトの読み込みに失敗しました。");
     };
     document.body.appendChild(script);
 }
 
-// 2. JSONPコールバック関数 (GASからデータが届くとここが実行されます)
+// 2. JSONPコールバック関数
 function handleResponse(response) {
     if (response && response.error) {
         showError("GASエラー: " + response.error);
