@@ -61,7 +61,7 @@ function renderAlertZone(data) {
     if (targetAlertDays === 21) labelText = "3週間以内";
     if (targetAlertDays === 30) labelText = "1ヶ月以内";
     
-    alertTitle.textContent = `🔥 もうすぐしめきり！（${labelText}）`;
+    alertTitle.textContent = `🔥 もうすぐ締め切り！（${labelText}）`;
 
     const now = new Date();
     const alerts = [];
@@ -133,7 +133,7 @@ function renderCards(data) {
         card.innerHTML = `
             <div class="card-header" data-urgent="${isUrgent}">
                 <span class="subject-badge" data-subject="${item.subject}">${item.subject}</span>
-                <span class="deadline">⌛ しめきり: ${formattedDate}</span>
+                <span class="deadline">⌛ 締め切り: ${formattedDate}</span>
             </div>
             <div class="card-body">
                 <p class="range">${item.range}</p>
