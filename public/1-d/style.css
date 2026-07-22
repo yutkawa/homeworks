@@ -354,15 +354,52 @@ footer {
 }
 
 /* ----------------------------------
-   2. カード左上の教科バッジ（「その他」等）
+   教科バッジ（カード左上）
    ---------------------------------- */
+
+/* 1. まずは全てのバッジの基本スタイル（文字色など） */
 .subject-badge {
   display: inline-block;
-  background-color: #e2e8f0 !important; /* パステルグレー */
-  color: #2d3748 !important;            /* 濃い文字色で読みやすく */
+  color: #fff !important;    /* 主要教科は白文字で見やすく */
   font-weight: bold;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   padding: 4px 10px;
   border-radius: 10px;
-  margin-right: 8px;
+  margin-right: 6px;
+}
+
+/* 2. 各教科のカラーを定義（!importantをつけて優先させる） */
+.subject-badge[data-subject="国語"] {
+  background-color: #ff6b6b !important; /* パステルレッド */
+}
+
+.subject-badge[data-subject="数学"] {
+  background-color: #ff9f43 !important; /* パステルオレンジ */
+}
+
+.subject-badge[data-subject="社会"] {
+  background-color: #f1c40f !important; /* パステルイエロー */
+}
+
+.subject-badge[data-subject="理科"] {
+  background-color: #54a0ff !important; /* パステルブルー */
+}
+
+.subject-badge[data-subject="英語"] {
+  background-color: #1dd1a1 !important; /* パステルグリーン */
+}
+
+.subject-badge[data-subject="音楽"] {
+  background-color: #a55eea !important; /* パステルパープル */
+}
+
+/* 3. 「その他」のデフォルト（色定義のないバッジ） */
+.subject-badge {
+  background-color: #e2e8f0;  /* デフォルトは薄いグレー */
+  color: #2d3748;             /* グレー地には濃い文字 */
+}
+
+/* グレー地用の色のリセット */
+.subject-badge:not([data-subject="国語"]):not([data-subject="数学"]):not([data-subject="社会"]):not([data-subject="理科"]):not([data-subject="英語"]):not([data-subject="音楽"]) {
+    color: #2d3748 !important;
 }
