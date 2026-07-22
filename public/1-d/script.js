@@ -81,6 +81,23 @@ function getSubjectClass(subject) {
     }
 }
 
+// 日付文字列を「YYYY/MM/DD」または「MM/DD」に整えるヘルパー関数
+function formatDeadline(dateStr) {
+    if (!dateStr) return '未定';
+    
+    // 日付オブジェクトを作成
+    const d = new Date(dateStr);
+    
+    // 日付として正しく読み込めない文字列の場合はそのまま返す
+    if (isNaN(d.getTime())) return dateStr;
+
+    // 日本時間に合わせた月日を取得
+    const month = d.getMonth() + 1;
+    const date = d.getDate();
+
+    return `${month}/${date}`; // 例: 8/22 （「2026/08/22」にしたい場合は `${d.getFullYear()}/${month}/${date}`）
+}
+
 // 4. フィルター適用＆描画関数
 function applyFiltersAndRender() {
     const standardSubjects = ['国語', '数学', '社会', '理科', '英語', '技術・家庭', '音楽', '美術'];
