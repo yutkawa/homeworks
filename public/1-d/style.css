@@ -108,16 +108,16 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1) !important;
 }
 
-.nav-btn[data-subject="すべて"].active { background: #64748b; border-color: #64748b; }
-.nav-btn[data-subject="国語"].active { background: #f26d6d; border-color: #f26d6d; }
-.nav-btn[data-subject="数学"].active { background: #63a4ff; border-color: #63a4ff; }
-.nav-btn[data-subject="社会"].active { background: #f0c24d; border-color: #f0c24d; }
-.nav-btn[data-subject="理科"].active { background: #68cc90; border-color: #68cc90; }
-.nav-btn[data-subject="英語"].active { background: #f59e56; border-color: #f59e56; }
-.nav-btn[data-subject="技術・家庭"].active { background: #c28867; border-color: #c28867; }
-.nav-btn[data-subject="音楽"].active { background: #4a5568; border-color: #4a5568; }
-.nav-btn[data-subject="美術"].active { background: #b08bf0; border-color: #b08bf0; }
-.nav-btn[data-subject="その他"].active { background: #64748b; border-color: #64748b; }
+.nav-btn[data-subject="すべて"].active { background: #64748b !important; border-color: #64748b !important; }
+.nav-btn[data-subject="国語"].active { background: #f26d6d !important; border-color: #f26d6d !important; }
+.nav-btn[data-subject="数学"].active { background: #63a4ff !important; border-color: #63a4ff !important; }
+.nav-btn[data-subject="社会"].active { background: #f0c24d !important; border-color: #f0c24d !important; }
+.nav-btn[data-subject="理科"].active { background: #68cc90 !important; border-color: #68cc90 !important; }
+.nav-btn[data-subject="英語"].active { background: #f59e56 !important; border-color: #f59e56 !important; }
+.nav-btn[data-subject="技術・家庭"].active { background: #c28867 !important; border-color: #c28867 !important; }
+.nav-btn[data-subject="音楽"].active { background: #4a5568 !important; border-color: #4a5568 !important; }
+.nav-btn[data-subject="美術"].active { background: #b08bf0 !important; border-color: #b08bf0 !important; }
+.nav-btn[data-subject="その他"].active { background: #64748b !important; border-color: #64748b !important; }
 
 /* ==========================================
    ⏱️ 表示日数しぼりこみメニュー
@@ -150,31 +150,36 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
     background-size: 14px;
 }
 
-.days-filter-container select:focus {
-    border-color: #7ba4db;
-    box-shadow: 0 0 0 3px rgba(123, 164, 219, 0.15);
-}
-
 /* ==========================================
-   教科バッジ
+   🏷️ 教科バッジ（共通スタイル & パステルカラー）
    ========================================== */
-.subject-badge { 
-    color: white; 
+.subject-badge,
+.alert-badge { 
+    display: inline-block;
+    color: #ffffff !important; 
     padding: 0.25rem 0.75rem; 
     border-radius: 8px; 
     font-weight: 700; 
     font-size: 0.8rem; 
     letter-spacing: 0.5px;
+    margin-right: 6px;
 }
-.subject-badge[data-subject="国語"] { background-color: #f26d6d; }
-.subject-badge[data-subject="数学"] { background-color: #63a4ff; }
-.subject-badge[data-subject="社会"] { background-color: #f0c24d; color: #fff; }
-.subject-badge[data-subject="理科"] { background-color: #68cc90; }
-.subject-badge[data-subject="英語"] { background-color: #f59e56; }
-.subject-badge[data-subject="技術・家庭"] { background-color: #c28867; }
-.subject-badge[data-subject="音楽"] { background-color: #4a5568; }
-.subject-badge[data-subject="美術"] { background-color: #b08bf0; }
-.subject-badge[data-subject="その他"] { background-color: #c8c8c8; }
+
+/* クラス名（.badge-xxx）で色を指定 */
+.badge-japanese { background-color: #f26d6d !important; } /* 国語 */
+.badge-math     { background-color: #63a4ff !important; } /* 数学 */
+.badge-social   { background-color: #f0c24d !important; } /* 社会 */
+.badge-science  { background-color: #68cc90 !important; } /* 理科 */
+.badge-english  { background-color: #f59e56 !important; } /* 英語 */
+.badge-tech     { background-color: #c28867 !important; } /* 技術・家庭 */
+.badge-music    { background-color: #4a5568 !important; } /* 音楽 */
+.badge-art      { background-color: #b08bf0 !important; } /* 美術 */
+
+/* その他（グレー地 ＋ 濃い文字） */
+.badge-other { 
+    background-color: #e2e8f0 !important; 
+    color: #2d3748 !important; 
+}
 
 /* ==========================================
    ⚠️ 警告ゾーン
@@ -207,25 +212,6 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
     font-size: 0.95rem;
     box-shadow: 0 4px 12px rgba(225, 29, 72, 0.04);
 }
-
-.alert-badge {
-    color: white;
-    padding: 0.2rem 0.6rem;
-    border-radius: 8px;
-    font-weight: 700;
-    margin-right: 12px;
-    font-size: 0.75rem;
-}
-.alert-badge[data-subject="国語"] { background-color: #f26d6d; }
-.alert-badge[data-subject="数学"] { background-color: #63a4ff; }
-.alert-badge[data-subject="社会"] { background-color: #f0c24d; }
-.alert-badge[data-subject="理科"] { background-color: #68cc90; }
-.alert-badge[data-subject="英語"] { background-color: #f59e56; }
-.alert-badge[data-subject="技術・家庭"] { background-color: #c28867; }
-.alert-badge[data-subject="音楽"] { background-color: #4a5568; }
-.alert-badge[data-subject="美術"] { background-color: #b08bf0; }
-.alert-badge[data-subject="その他"] { background-color: #c8c8c8; }
-
 
 .alert-range {
     font-weight: 700;
@@ -329,77 +315,4 @@ footer {
     font-size: 0.8rem;
     font-weight: 600;
     padding: 3rem 1rem;
-}
-
-/* ----------------------------------
-   1. ボタンの文字色と見た目を強力固定
-   ---------------------------------- */
-.nav-btn {
-  background-color: #ffffff !important;
-  color: #4a5568 !important;            /* 文字色を濃いグレーに強制指定 */
-  border: 1px solid #cbd5e0 !important;  /* 枠線をくっきり表示 */
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* 選択されているボタン (アクティブ状態) */
-.nav-btn.active {
-  background-color: #4a5568 !important; /* 背景を暗めのグレーに */
-  color: #ffffff !important;            /* 文字を白に */
-  border-color: #4a5568 !important;
-}
-
-/* ----------------------------------
-   教科バッジ（カード左上）
-   ---------------------------------- */
-
-/* 1. まずは全てのバッジの基本スタイル（文字色など） */
-.subject-badge {
-  display: inline-block;
-  color: #fff !important;    /* 主要教科は白文字で見やすく */
-  font-weight: bold;
-  font-size: 0.8rem;
-  padding: 4px 10px;
-  border-radius: 10px;
-  margin-right: 6px;
-}
-
-/* 2. 各教科のカラーを定義（!importantをつけて優先させる） */
-.subject-badge[data-subject="国語"] {
-  background-color: #ff6b6b !important; /* パステルレッド */
-}
-
-.subject-badge[data-subject="数学"] {
-  background-color: #ff9f43 !important; /* パステルオレンジ */
-}
-
-.subject-badge[data-subject="社会"] {
-  background-color: #f1c40f !important; /* パステルイエロー */
-}
-
-.subject-badge[data-subject="理科"] {
-  background-color: #54a0ff !important; /* パステルブルー */
-}
-
-.subject-badge[data-subject="英語"] {
-  background-color: #1dd1a1 !important; /* パステルグリーン */
-}
-
-.subject-badge[data-subject="音楽"] {
-  background-color: #a55eea !important; /* パステルパープル */
-}
-
-/* 3. 「その他」のデフォルト（色定義のないバッジ） */
-.subject-badge {
-  background-color: #e2e8f0;  /* デフォルトは薄いグレー */
-  color: #2d3748;             /* グレー地には濃い文字 */
-}
-
-/* グレー地用の色のリセット */
-.subject-badge:not([data-subject="国語"]):not([data-subject="数学"]):not([data-subject="社会"]):not([data-subject="理科"]):not([data-subject="英語"]):not([data-subject="音楽"]) {
-    color: #2d3748 !important;
 }
