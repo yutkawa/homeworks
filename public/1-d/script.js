@@ -147,7 +147,7 @@ function renderCards(data) {
             <div class="card" data-subject="${item.subject}">
                 <div class="card-header">
                     <span class="subject-badge ${badgeClass}">${item.subject}</span>
-                    <span class="deadline">⏳ 締め切り: ${item.deadline || '未定'}</span>
+                    <span class="deadline">⏳ 締め切り: ${formatDeadline(item.deadline)}</span>
                 </div>
                 <div class="card-body">
                     <div class="range">${item.range || '範囲指定なし'}</div>
@@ -189,7 +189,7 @@ function renderAlertZone(data) {
             <div class="alert-card">
                 <span class="alert-badge ${badgeClass}">${item.subject}</span>
                 <span class="alert-range">${item.range || ''}</span>
-                <span class="alert-days">⏳ 締め切り: ${item.deadline}</span>
+                <span class="alert-days">⏳ 締め切り: ${formatDeadline(item.deadline)}</span>
             </div>
         `;
     });
