@@ -330,3 +330,39 @@ footer {
     font-weight: 600;
     padding: 3rem 1rem;
 }
+
+/* ----------------------------------
+   1. ボタンの文字色と見た目を強力固定
+   ---------------------------------- */
+.nav-btn {
+  background-color: #ffffff !important;
+  color: #4a5568 !important;            /* 文字色を濃いグレーに強制指定 */
+  border: 1px solid #cbd5e0 !important;  /* 枠線をくっきり表示 */
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 選択されているボタン (アクティブ状態) */
+.nav-btn.active {
+  background-color: #4a5568 !important; /* 背景を暗めのグレーに */
+  color: #ffffff !important;            /* 文字を白に */
+  border-color: #4a5568 !important;
+}
+
+/* ----------------------------------
+   2. カード左上の教科バッジ（「その他」等）
+   ---------------------------------- */
+.subject-badge {
+  display: inline-block;
+  background-color: #e2e8f0 !important; /* パステルグレー */
+  color: #2d3748 !important;            /* 濃い文字色で読みやすく */
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 10px;
+  margin-right: 8px;
+}
