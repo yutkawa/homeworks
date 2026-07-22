@@ -1,6 +1,24 @@
 let homeworkData = [];
 let targetAlertDays = 14; 
 
+// 定義されている基本教科リスト
+const standardSubjects = ['国語', '数学', '社会', '理科', '英語', '技術・家庭', '音楽', '美術'];
+
+// 🎨 教科ごとのCSSクラス名を判定するヘルパー関数
+function getSubjectClass(subject) {
+    switch (subject) {
+        case '国語': return 'badge-japanese';
+        case '数学': return 'badge-math';
+        case '社会': return 'badge-social';
+        case '理科': return 'badge-science';
+        case '英語': return 'badge-english';
+        case '技術・家庭': return 'badge-tech';
+        case '音楽': return 'badge-music';
+        case '美術': return 'badge-art';
+        default: return 'badge-other'; // その他・未定義の教科
+    }
+}
+
 // 1. APIから宿題データを取得 (JSONP)
 async function fetchHomeworkZone() {
     const jsonpUrl = "https://script.google.com/macros/s/AKfycbzCoWsfnoNW1WH75I6GXwDxEkadQD9c2rqfUwy-XU_2dMaNWVM6B5eCrwlLu_FO7aonww/exec?prefix=handleResponse";
@@ -88,8 +106,10 @@ function renderAlertZone(data) {
     alerts.forEach(item => {
         const card = document.createElement('div');
         card.className = 'alert-card';
+        const subjectClass = getSubjectClass(item.subject);
+        
         card.innerHTML = `
-            <span class="alert-badge" data-subject="${item.subject}">${item.subject}</span>
+            <span class="alert-badge ${subjectClass}">${item.subject}</span>
             <div class="alert-range">${item.range}</div>
             <span class="alert-days">あと ${item.daysDiff} 日</span>
         `;
@@ -129,10 +149,11 @@ function renderCards(data) {
         }
 
         const formattedDate = item.deadline ? item.deadline.replace(/^\d{4}-/, '').replace('-', '/') : '未定';
+        const subjectClass = getSubjectClass(item.subject);
 
         card.innerHTML = `
             <div class="card-header" data-urgent="${isUrgent}">
-                <span class="subject-badge" data-subject="${item.subject}">${item.subject}</span>
+                <span class="subject-badge ${subjectClass}">${item.subject}</span>
                 <span class="deadline">⌛ 締め切り: ${formattedDate}</span>
             </div>
             <div class="card-body">
@@ -164,10 +185,23 @@ function filterSubject(subject) {
 
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
-        if (subject === 'すべて' || card.getAttribute('data-subject-card') === subject) {
+        const cardSubject = card.getAttribute('data-subject-card');
+        
+        if (subject === 'すべて') {
             card.style.display = 'block';
+        } else if (subject === 'その他') {
+            // 基本教科リストに含まれない教科を表示
+            if (!standardSubjects.includes(cardSubject)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
         } else {
-            card.style.display = 'none';
+            if (cardSubject === subject) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
         }
     });
 }
