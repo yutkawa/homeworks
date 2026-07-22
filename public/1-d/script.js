@@ -1,31 +1,52 @@
-// 例: ドロップダウンやボタンのイベント処理部分
-function renderTasks(filterSubject = 'all') {
-  const container = document.getElementById('task-container');
-  container.innerHTML = ''; // クリア
+// ボタンとして一覧にある主要な教科のリスト
+const definedSubjects = [
+  '国語', '数学', '社会', '理科', '英語', 
+  '技術・家庭', '音楽', '美術'
+];
 
-  // 定義されている基本教科のリスト
-  const standardSubjects = ['国語', '数学', '英語', '理科', '社会'];
+let currentSubjectFilter = 'すべて';
+
+// 教科切り替え関数
+function filterSubject(subject) {
+  currentSubjectFilter = subject;
+
+  // アクティブボタンの見た目を切り替え
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-subject') === subject);
+  });
+
+  // 再描画
+  renderHomeworkList();
+}
+
+// カード描画関数（メイン処理）
+function renderHomeworkCards(dataList, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
 
   // フィルタリング処理
-  const filteredData = homeworkData.filter(item => {
-    if (filterSubject === 'all') {
-      return true; // 「すべて」の場合は全件表示
-    } else if (filterSubject === 'other') {
-      // 「その他」の場合は基本5教科に含まれないものを抽出
-      return !standardSubjects.includes(item.subject);
+  const filteredData = dataList.filter(item => {
+    if (currentSubjectFilter === 'すべて') {
+      return true;
+    } else if (currentSubjectFilter === 'その他') {
+      // 一覧ボタンにない教科（保体、総合、道徳など）をまとめ対象にする
+      return !definedSubjects.includes(item.subject);
     } else {
-      // 個別教科（国語、数学など）の完全一致
-      return item.subject === filterSubject;
+      return item.subject === currentSubjectFilter;
     }
   });
 
-  // カードの描画
+  if (filteredData.length === 0) {
+    container.innerHTML = '<p class="no-data">該当する宿題はありません🎉</p>';
+    return;
+  }
+
   filteredData.forEach(item => {
     const card = document.createElement('div');
-    card.className = 'task-card';
+    card.className = 'homework-card';
 
-    // 「すべて」または「その他」が選択されている時は教科ラベルを表示する
-    const showSubjectTag = (filterSubject === 'all' || filterSubject === 'other');
+    // 「すべて」または「その他」が選ばれている場合は教科タグを表示する
+    const showSubjectTag = (currentSubjectFilter === 'すべて' || currentSubjectFilter === 'その他');
     const subjectBadgeHTML = showSubjectTag 
       ? `<span class="subject-badge">${escapeHTML(item.subject)}</span>` 
       : '';
@@ -45,9 +66,9 @@ function renderTasks(filterSubject = 'all') {
   });
 }
 
-// エスクープ処理（XSS対策）
+// XSS対策のエスケープ処理
 function escapeHTML(str) {
-  return String(str)
+  return String(str || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
