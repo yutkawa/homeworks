@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1-D 宿題チェッカー</title>
+    <title>1-D 宿題公開サイト</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <!-- 🏷️ ヘッダーエリア -->
     <header id="page-header">
-        <h1>1-D 宿題チェッカー</h1>
+        <h1>1-D 宿題公開サイト</h1>
         <p class="update-info">データ更新: <span id="last-updated">--/-- --:--</span></p>
     </header>
 
@@ -31,7 +31,7 @@
 
     <!-- ⏱️ 表示日数の絞り込みメニュー -->
     <div class="days-filter-container">
-        <label for="days-select">アラート対象：</label>
+        <label for="days-select">絞り込み対象：</label>
         <select id="days-select" onchange="changeAlertDays(this.value)">
             <option value="3">3日前から表示</option>
             <option value="7">1週間前から表示</option>
@@ -43,7 +43,7 @@
 
     <!-- ⚠️ 警告ゾーン -->
     <section id="alert-zone" class="alert-zone" style="display: none;">
-        <h2 id="alert-title">🔥 もうすぐしめきり！（2週間以内）</h2>
+        <h2 id="alert-title">🔥 もうすぐ締め切り！</h2>
         <div id="alert-container"></div>
     </section>
 
