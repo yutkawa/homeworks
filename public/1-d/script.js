@@ -1,10 +1,10 @@
 // ==========================================
-// 宿題ダッシュボード メインスクリプト　202607221752
+// 宿題ダッシュボード メインスクリプト
 // ==========================================
 
 let homeworkData = [];
 let currentSubject = 'すべて';
-let currentDaysFilter = 'all'; // 'all' または 数字 (例: 14)
+let currentDaysFilter = 'all'; 
 
 // 1. APIから宿題データを取得 (JSONP)
 function fetchHomeworkZone() {
@@ -54,7 +54,7 @@ function handleResponse(response) {
     // レスポンスデータの正規化（新・旧GASレスポンス両対応）
     const rawData = response.data || (Array.isArray(response) ? response : []);
 
-    // 💡 見出し行や不正な行を徹底排除
+    // 見出し行や不正な行を排除
     homeworkData = rawData.filter(item => {
         if (!item || !item.subject) return false;
         const subj = String(item.subject).trim();
@@ -63,7 +63,7 @@ function handleResponse(response) {
 
     updateLastUpdatedTime();
     renderAlertZone(homeworkData);
-    applyFiltersAndRender(); // フィルターを適用して描画
+    applyFiltersAndRender();
 }
 
 // 3. 日付フォーマット整形ヘルパー（ISO文字列などを「M/D」に整える）
@@ -71,7 +71,7 @@ function formatDeadline(dateStr) {
     if (!dateStr) return '未定';
     
     const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr; // 日付変換できない文字列はそのまま表示
+    if (isNaN(d.getTime())) return dateStr;
 
     const month = d.getMonth() + 1;
     const date = d.getDate();
@@ -98,7 +98,6 @@ function getSubjectClass(subject) {
 function applyFiltersAndRender() {
     const standardSubjects = ['国語', '数学', '社会', '理科', '英語', '技術・家庭', '音楽', '美術'];
     
-    // 今日の日付（時刻をクリア）
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -111,18 +110,30 @@ function applyFiltersAndRender() {
         }
 
         // --- 表示日数（絞り込み）フィルター ---
-        if (currentDaysFilter !== 'all') {
+        if (currentDaysFilter !== 'all' && currentDaysFilter !== '') {
             if (!item.deadline) return true; // 締め切り未定は保護して表示
+
+            // 「1週間前から表示」などの文字列から数値を自動計算
+            let maxDays = 14; 
+            const match = currentDaysFilter.match(/\d+/);
+            if (match) {
+                const num = parseInt(match[0], 10);
+                if (currentDaysFilter.includes('週間')) {
+                    maxDays = num * 7;
+                } else if (currentDaysFilter.includes('ヶ月') || currentDaysFilter.includes('月')) {
+                    maxDays = num * 30;
+                } else {
+                    maxDays = num;
+                }
+            }
 
             const deadlineDate = new Date(item.deadline);
             if (!isNaN(deadlineDate.getTime())) {
                 deadlineDate.setHours(0, 0, 0, 0);
                 
-                // 今日から締め切り日までの日数差（未来: プラス、過去: マイナス）
                 const diffDays = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
-                const maxDays = parseInt(currentDaysFilter, 10);
 
-                // 期限切れ（過去1日より前）または指定日数を超える未来の課題は非表示
+                // 期限が過ぎすぎている（過去2日以上前）、または指定日数を超える先の課題を弾く
                 if (diffDays < -1 || diffDays > maxDays) {
                     return false;
                 }
