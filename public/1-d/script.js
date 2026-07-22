@@ -1,5 +1,5 @@
 // ==========================================
-// 宿題ダッシュボード メインスクリプト 更新202607221744
+// 宿題ダッシュボード メインスクリプト　202607221752
 // ==========================================
 
 let homeworkData = [];
@@ -66,7 +66,20 @@ function handleResponse(response) {
     applyFiltersAndRender(); // フィルターを適用して描画
 }
 
-// 3. 教科クラス名変換ヘルパー
+// 3. 日付フォーマット整形ヘルパー（ISO文字列などを「M/D」に整える）
+function formatDeadline(dateStr) {
+    if (!dateStr) return '未定';
+    
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr; // 日付変換できない文字列はそのまま表示
+
+    const month = d.getMonth() + 1;
+    const date = d.getDate();
+
+    return `${month}/${date}`;
+}
+
+// 4. 教科クラス名変換ヘルパー
 function getSubjectClass(subject) {
     switch (subject) {
         case '国語': return 'badge-japanese';
@@ -81,26 +94,11 @@ function getSubjectClass(subject) {
     }
 }
 
-// 日付文字列を「YYYY/MM/DD」または「MM/DD」に整えるヘルパー関数
-function formatDeadline(dateStr) {
-    if (!dateStr) return '未定';
-    
-    // 日付オブジェクトを作成
-    const d = new Date(dateStr);
-    
-    // 日付として正しく読み込めない文字列の場合はそのまま返す
-    if (isNaN(d.getTime())) return dateStr;
-
-    // 日本時間に合わせた月日を取得
-    const month = d.getMonth() + 1;
-    const date = d.getDate();
-
-    return `${month}/${date}`; // 例: 8/22 （「2026/08/22」にしたい場合は `${d.getFullYear()}/${month}/${date}`）
-}
-
-// 4. フィルター適用＆描画関数
+// 5. フィルター適用＆描画関数
 function applyFiltersAndRender() {
     const standardSubjects = ['国語', '数学', '社会', '理科', '英語', '技術・家庭', '音楽', '美術'];
+    
+    // 今日の日付（時刻をクリア）
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -113,14 +111,21 @@ function applyFiltersAndRender() {
         }
 
         // --- 表示日数（絞り込み）フィルター ---
-        if (currentDaysFilter !== 'all' && item.deadline) {
+        if (currentDaysFilter !== 'all') {
+            if (!item.deadline) return true; // 締め切り未定は保護して表示
+
             const deadlineDate = new Date(item.deadline);
             if (!isNaN(deadlineDate.getTime())) {
                 deadlineDate.setHours(0, 0, 0, 0);
+                
+                // 今日から締め切り日までの日数差（未来: プラス、過去: マイナス）
                 const diffDays = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
                 const maxDays = parseInt(currentDaysFilter, 10);
-                // 過去の宿題、または指定日数を超える未来の宿題は非表示
-                if (diffDays < 0 || diffDays > maxDays) return false;
+
+                // 期限切れ（過去1日より前）または指定日数を超える未来の課題は非表示
+                if (diffDays < -1 || diffDays > maxDays) {
+                    return false;
+                }
             }
         }
 
@@ -130,7 +135,7 @@ function applyFiltersAndRender() {
     renderCards(filtered);
 }
 
-// 5. 宿題カードの描画
+// 6. 宿題カードの描画
 function renderCards(data) {
     const mainContainer = document.querySelector('main');
     if (!mainContainer) return;
@@ -143,11 +148,13 @@ function renderCards(data) {
     let html = '';
     data.forEach(item => {
         const badgeClass = getSubjectClass(item.subject);
+        const deadlineText = formatDeadline(item.deadline);
+        
         html += `
             <div class="card" data-subject="${item.subject}">
                 <div class="card-header">
                     <span class="subject-badge ${badgeClass}">${item.subject}</span>
-                    <span class="deadline">⏳ 締め切り: ${formatDeadline(item.deadline)}</span>
+                    <span class="deadline">⏳ 締め切り: ${deadlineText}</span>
                 </div>
                 <div class="card-body">
                     <div class="range">${item.range || '範囲指定なし'}</div>
@@ -159,7 +166,7 @@ function renderCards(data) {
     mainContainer.innerHTML = html;
 }
 
-// 6. ⚠️ 警告ゾーン（締め切り間近：14日以内）の描画
+// 7. ⚠️ 警告ゾーン（締め切り間近：14日以内）の描画
 function renderAlertZone(data) {
     const alertZone = document.querySelector('.alert-zone');
     if (!alertZone) return;
@@ -185,18 +192,20 @@ function renderAlertZone(data) {
     let html = `<h2>⚠️ 締め切り間近（14日以内）</h2>`;
     urgentItems.forEach(item => {
         const badgeClass = getSubjectClass(item.subject);
+        const deadlineText = formatDeadline(item.deadline);
+        
         html += `
             <div class="alert-card">
                 <span class="alert-badge ${badgeClass}">${item.subject}</span>
                 <span class="alert-range">${item.range || ''}</span>
-                <span class="alert-days">⏳ 締め切り: ${formatDeadline(item.deadline)}</span>
+                <span class="alert-days">⏳ 締め切り: ${deadlineText}</span>
             </div>
         `;
     });
     alertZone.innerHTML = html;
 }
 
-// 7. エラー表示
+// 8. エラー表示
 function showError(message) {
     const mainContainer = document.querySelector('main');
     if (mainContainer) {
@@ -204,7 +213,7 @@ function showError(message) {
     }
 }
 
-// 8. 最終更新日時
+// 9. 最終更新日時
 function updateLastUpdatedTime() {
     const updateElem = document.querySelector('.update-info');
     if (updateElem) {
@@ -228,10 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
             navButtons.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             
-            // data-subject 属性から教科名を取得
             currentSubject = e.target.getAttribute('data-subject') || 'すべて';
             
-            // ヘッダーの色も連動変更
             const header = document.querySelector('header');
             if (header) header.setAttribute('data-subject', currentSubject);
 
