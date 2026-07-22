@@ -1,10 +1,9 @@
 let homeworkData = [];
 let targetAlertDays = 14; 
 
-// 1. 新しいAPIのURLから宿題データを取得 (JSONP)
+// 1. APIから宿題データを取得 (JSONP)
 async function fetchHomeworkZone() {
-    // 💡 共有いただいた最新のデプロイURLを反映し、末尾に必須のコールバックパラメータを付与しました
-    const jsonpUrl = "https://script.google.com/macros/s/AKfycbyXeMODh3S94llRj5T__R3CfoEBJUXHKeHJ35ThSdyqSb13zm6jtAWq1uZFiKRctDq5-g/exec?prefix=handleResponse";
+    const jsonpUrl = "https://script.google.com/macros/s/AKfycbzCoWsfnoNW1WH75I6GXwDxEkadQD9c2rqfUwy-XU_2dMaNWVM6B5eCrwlLu_FO7aonww/exec?prefix=handleResponse";
     
     // タイムアウト監視（10秒経っても反応がなければ画面にエラーを出す）
     const timeoutId = setTimeout(() => {
