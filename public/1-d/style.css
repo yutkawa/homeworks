@@ -117,6 +117,7 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
 .nav-btn[data-subject="技術・家庭"].active { background: #c28867; border-color: #c28867; }
 .nav-btn[data-subject="音楽"].active { background: #4a5568; border-color: #4a5568; }
 .nav-btn[data-subject="美術"].active { background: #b08bf0; border-color: #b08bf0; }
+.nav-btn[data-subject="その他"].active { background: #64748b; border-color: #64748b; }
 
 /* ==========================================
    ⏱️ 表示日数しぼりこみメニュー
@@ -173,6 +174,7 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
 .subject-badge[data-subject="技術・家庭"] { background-color: #c28867; }
 .subject-badge[data-subject="音楽"] { background-color: #4a5568; }
 .subject-badge[data-subject="美術"] { background-color: #b08bf0; }
+.subject-badge[data-subject="その他"] { background-color: #c8c8c8; }
 
 /* ==========================================
    ⚠️ 警告ゾーン
@@ -222,6 +224,8 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
 .alert-badge[data-subject="技術・家庭"] { background-color: #c28867; }
 .alert-badge[data-subject="音楽"] { background-color: #4a5568; }
 .alert-badge[data-subject="美術"] { background-color: #b08bf0; }
+.alert-badge[data-subject="その他"] { background-color: #c8c8c8; }
+
 
 .alert-range {
     font-weight: 700;
