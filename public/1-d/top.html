@@ -10,12 +10,12 @@
 
     <!-- 🏷️ ヘッダーエリア -->
     <header id="page-header">
-        <h1>1-D 宿題公開サイト</h1>
+        <h1>1-D 宿題チェッカー</h1>
         <p class="update-info">データ更新: <span id="last-updated">--/-- --:--</span></p>
     </header>
 
     <!-- 📂 教科別ナビゲーションボタン -->
-    <p class="filter-headline">教科を選択</p>
+    <p class="filter-headline">Subject</p>
     <nav class="subject-nav">
         <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
         <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
@@ -30,19 +30,19 @@
 
     <!-- ⏱️ 表示日数の絞り込みメニュー -->
     <div class="days-filter-container">
-        <label for="days-select">警告ゾーンに表示する期限：</label>
+        <label for="days-select">アラート対象：</label>
         <select id="days-select" onchange="changeAlertDays(this.value)">
-            <option value="3">3日前から</option>
-            <option value="7">1週間前から</option>
-            <option value="14" selected>2週間前から</option>
-            <option value="21">3週間前から</option>
-            <option value="30">1ヶ月前から</option>
+            <option value="3">3日前から表示</option>
+            <option value="7">1週間前から表示</option>
+            <option value="14" selected>2週間前から表示</option>
+            <option value="21">3週間前から表示</option>
+            <option value="30">1ヶ月前から表示</option>
         </select>
     </div>
 
-    <!-- ⚠️ 警告ゾーン（ここのタイトルが選択に合わせて動的に変わります） -->
+    <!-- ⚠️ 警告ゾーン -->
     <section id="alert-zone" class="alert-zone" style="display: none;">
-        <h2 id="alert-title">もうすぐ締め切りです！（2週間以内）</h2>
+        <h2 id="alert-title">🔥 もうすぐしめきり！（2週間以内）</h2>
         <div id="alert-container"></div>
     </section>
 
