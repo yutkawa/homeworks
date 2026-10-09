@@ -29,24 +29,6 @@
         <button class="nav-btn" data-subject="その他" onclick="filterSubject('その他')">その他</button>
     </nav>
 
-    <!-- ⏱️ 表示日数の絞り込みメニュー -->
-    <div class="days-filter-container">
-        <label for="days-select">絞り込み対象：</label>
-        <select id="days-select" onchange="changeAlertDays(this.value)">
-            <option value="3">3日前から表示</option>
-            <option value="7">1週間前から表示</option>
-            <option value="14" selected>2週間前から表示</option>
-            <option value="21">3週間前から表示</option>
-            <option value="30">1ヶ月前から表示</option>
-        </select>
-    </div>
-
-    <!-- ⚠️ 警告ゾーン -->
-    <section id="alert-zone" class="alert-zone" style="display: none;">
-        <h2 id="alert-title">もうすぐ締め切り！（2週間以内）</h2>
-        <div id="alert-container"></div>
-    </section>
-
     <!-- 📋 宿題カードメインエリア -->
     <main>
         <div id="homework-container">
