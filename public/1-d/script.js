@@ -3,7 +3,6 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbwU0bU-WXlFhDOeiAooUXe6
 let homeworkData = [];
 let currentSubject = 'すべて';
 
-// JSONP受信用コールバック関数
 window.handleResponse = function(response) {
     if (!response || response.status === "error") {
         showError("データ取得エラー: " + (response ? response.error : "応答なし"));
@@ -30,14 +29,12 @@ function showError(msg) {
     }
 }
 
-// 日付文字列を確実にDateオブジェクトに変換する関数
 function parseDeadline(dateStr) {
     if (!dateStr) return null;
     
     let d = new Date(dateStr);
     if (!isNaN(d.getTime())) return d;
 
-    // "8/22" や "08/22" などの "月/日" 形式を今年として解析
     const parts = String(dateStr).split(/[\/\-\.]/);
     if (parts.length === 2) {
         const now = new Date();
@@ -51,7 +48,6 @@ function parseDeadline(dateStr) {
 }
 
 function updateUI() {
-    // 1. 最終更新日時の表示
     const updateTimeElem = document.querySelector('.update-info');
     if (updateTimeElem) {
         const now = new Date();
@@ -62,19 +58,16 @@ function updateUI() {
         updateTimeElem.textContent = `データ更新: ${month}/${date} ${hours}:${minutes}`;
     }
 
-    // 今日の日付（時刻を00:00:00に揃える）
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const activeItems = [];
     const archivedItems = [];
 
-    // 2. 進行中とアーカイブの仕分け
     homeworkData.forEach(item => {
         const d = parseDeadline(item.deadline);
         
         if (!d) {
-            // 締め切りなし/判定不可は進行中へ
             activeItems.push(item);
             return;
         }
@@ -92,7 +85,6 @@ function updateUI() {
         }
     });
 
-    // 3. 描画
     renderCards(activeItems, archivedItems);
 }
 
@@ -100,7 +92,6 @@ function renderCards(activeItems, archivedItems) {
     const container = document.getElementById('card-container') || document.querySelector('main');
     if (!container) return;
 
-    // 教科によるフィルター
     const filteredActive = activeItems.filter(filterBySubject);
     const filteredArchived = archivedItems.filter(filterBySubject);
 
@@ -125,7 +116,6 @@ function renderCards(activeItems, archivedItems) {
                 </h3>
             </div>
         `;
-        // 直近で終了した順に並び替え
         filteredArchived.sort((a, b) => b.diffDays - a.diffDays);
         filteredArchived.forEach(item => {
             html += createCardHtml(item, true);
