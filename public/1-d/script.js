@@ -17,7 +17,7 @@ function fetchHomeworkJSONP() {
     const script = document.createElement('script');
     script.src = `${GAS_URL}?callback=handleResponse`;
     script.onerror = () => {
-        showError("⚠️ データ通信に失敗しました。");
+        showError("データ通信に失敗しました。");
     };
     document.body.appendChild(script);
 }
@@ -104,7 +104,7 @@ function renderCards(activeItems, archivedItems) {
             html += createCardHtml(item, false);
         });
     } else {
-        html += '<div class="loading">期限前の宿題はありません！🎉</div>';
+        html += '<div class="loading">期限前の宿題はありません</div>';
     }
 
     // 【過去の課題 (アーカイブ)】
@@ -112,7 +112,7 @@ function renderCards(activeItems, archivedItems) {
         html += `
             <div style="width: 100%; margin-top: 40px; margin-bottom: 20px;">
                 <h3 style="color: #7f8c8d; border-bottom: 2px dashed #bdc3c7; padding-bottom: 8px;">
-                    📦 終了した課題 (アーカイブ)
+                    終了した課題 (アーカイブ)
                 </h3>
             </div>
         `;
