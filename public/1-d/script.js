@@ -81,7 +81,7 @@ function updateUI() {
         if (diffDays < 0) {
             archivedItems.push(item); // 過去の課題（アーカイブ）
         } else {
-            activeItems.push(item);   // 進行中の課題
+            activeItems.push(item);   // 進行中の課題だわよ
         }
     });
 
