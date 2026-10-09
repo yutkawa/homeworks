@@ -1,4 +1,4 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwU0bU-WXlFhDOeiAooUXe6QMGCCYyyzAcK1GxYQFzjUr7v7VLEMpL_NWC822hiV2z3og/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzURhb-wdSxzP4Ly3-3d5wg4xyTvRDs5oHB0uRRFmYt9rblNMWhI72nbAliuKiIaD3uCA/exec";
 
 let homeworkData = [];
 let currentSubject = 'すべて';
