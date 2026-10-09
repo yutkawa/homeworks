@@ -316,3 +316,33 @@ footer {
     font-weight: 600;
     padding: 3rem 1rem;
 }
+
+/* アーカイブ用スタイル */
+.card-archived {
+    opacity: 0.6;
+    background-color: #f0f0f0;
+    border: 1px dashed #ccc;
+}
+
+.deadline-tag {
+    font-size: 0.85rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.deadline-tag.today {
+    background-color: #ff4757;
+    color: white;
+}
+
+.deadline-tag.upcoming {
+    background-color: #ffa502;
+    color: white;
+}
+
+.deadline-tag.archived {
+    background-color: #a4b0be;
+    color: white;
+}
