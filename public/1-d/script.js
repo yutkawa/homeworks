@@ -133,9 +133,9 @@ function createCardHtml(item, isArchived) {
         tagHtml = `<span style="background: #a4b0be; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">期限切れ (${Math.abs(item.diffDays)}日前)</span>`;
     } else if (item.diffDays !== undefined) {
         if (item.diffDays === 0) {
-            tagHtml = `<span style="background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">🔥 今日が締め切り！</span>`;
+            tagHtml = `<span style="background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">今日が締め切り</span>`;
         } else {
-            tagHtml = `<span style="background: #ffa502; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">⏳ あと ${item.diffDays} 日</span>`;
+            tagHtml = `<span style="background: #ffa502; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">あと ${item.diffDays} 日</span>`;
         }
     }
 
