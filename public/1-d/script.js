@@ -104,7 +104,7 @@ function renderCards(activeItems, archivedItems) {
             html += createCardHtml(item, false);
         });
     } else {
-        html += '<div class="loading">現在、進行中の宿題はありません！🎉</div>';
+        html += '<div class="loading">期限前の宿題はありません！🎉</div>';
     }
 
     // 【過去の課題 (アーカイブ)】
