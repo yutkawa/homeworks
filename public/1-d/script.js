@@ -1,35 +1,32 @@
-// あなたの GAS Web App の完全な URL
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwU0bU-WXlFhDOeiAooUXe6QMGCCYyyzAcK1GxYQFzjUr7v7VLEMpL_NWC822hiV2z3og/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwhkFW2lPoExnLZ3OhAXmNqo6VAj_yvXmIDHqycjyMtYm7rr98ZTWHHiiMZ-gGirU_WGA/exec";
 
 let homeworkData = [];
 let currentSubject = 'すべて';
 
-async function fetchHomework() {
-    const errorElem = document.getElementById('error-message');
-    try {
-        const response = await fetch(GAS_URL, {
-            method: "GET",
-            redirect: "follow"
-        });
+// GASからのJSONPデータを受け取るコールバック関数
+window.handleResponse = function(response) {
+    if (!response || response.status === "error") {
+        showError("エラー: " + (response ? response.error : "データ取得不能"));
+        return;
+    }
 
-        if (!response.ok) {
-            throw new Error(`HTTPエラー: ${response.status}`);
-        }
+    homeworkData = response.data || [];
+    updateUI();
+};
 
-        const result = await response.json();
+function fetchHomeworkJSONP() {
+    const script = document.createElement('script');
+    script.src = `${GAS_URL}?callback=handleResponse`;
+    script.onerror = () => {
+        showError("⚠️ データ通信に失敗しました。");
+    };
+    document.body.appendChild(script);
+}
 
-        if (result.status === "error") {
-            throw new Error(result.error || "GAS側でエラーが発生しました");
-        }
-
-        homeworkData = result.data || [];
-        updateUI();
-
-    } catch (error) {
-        console.error("Fetch error:", error);
-        if (errorElem) {
-            errorElem.textContent = `⚠️ データ通信に失敗しました。(${error.message})`;
-        }
+function showError(msg) {
+    const errorElem = document.querySelector('.loading') || document.body;
+    if (errorElem) {
+        errorElem.textContent = msg;
     }
 }
 
@@ -48,7 +45,7 @@ function updateUI() {
 }
 
 function renderCards() {
-    const container = document.getElementById('card-container');
+    const container = document.getElementById('card-container') || document.querySelector('main');
     if (!container) return;
 
     const filtered = homeworkData.filter(item => {
@@ -83,7 +80,6 @@ function formatDeadline(dateStr) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ボタン切り替えイベント
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -93,5 +89,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    fetchHomework();
+    fetchHomeworkJSONP();
 });
