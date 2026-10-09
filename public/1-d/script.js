@@ -145,7 +145,7 @@ function createCardHtml(item, isArchived) {
                 <span class="subject-badge ${getSubjectClass(item.subject)}">${item.subject || 'その他'}</span>
                 <div style="display: flex; align-items: center; gap: 6px;">
                     ${tagHtml}
-                    <span class="deadline">⌛ 締め切り: ${deadlineText}</span>
+                    <span class="deadline">締め切り: ${deadlineText}</span>
                 </div>
             </div>
             <div class="card-body">
