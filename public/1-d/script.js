@@ -4,7 +4,7 @@ let homeworkData = [];
 let currentSubject = 'すべて';
 let currentAlertDays = 14; // デフォルトは14日（2週間前）から警告表示
 
-// JSONP受信用コールバック関数
+// JSONP受信用コールバック関数さ
 window.handleResponse = function(response) {
     if (!response || response.status === "error") {
         showError("データ取得エラー: " + (response ? response.error : "応答なし"));
