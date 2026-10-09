@@ -1,271 +1,97 @@
-// ==========================================
-// 宿題ダッシュボード メインスクリプト
-// ==========================================
+// あなたの GAS Web App の完全な URL
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwU0bU-WXlFhDOeiAooUXe6QMGCCYyyzAcK1GxYQFzjUr7v7VLEMpL_NWC822hiV2z3og/exec";
 
 let homeworkData = [];
 let currentSubject = 'すべて';
-let currentDaysFilter = 'all'; 
 
-// 1. APIから宿題データを取得 (JSONP)
-function fetchHomeworkZone() {
-    const jsonpUrl = "https://script.google.com/macros/s/AKfycbzCoWsfnoNW1WH75I6GXwDxEkadQD9c2rqfUwy-XU_2dMaNWVM6B5eCrwlLu_FO7aonww/exec?prefix=handleResponse";
-    
-    // 古いスクリプトタグがあれば削除
-    const oldScript = document.getElementById('gas-jsonp');
-    if (oldScript) oldScript.remove();
+async function fetchHomework() {
+    const errorElem = document.getElementById('error-message');
+    try {
+        const response = await fetch(GAS_URL, {
+            method: "GET",
+            redirect: "follow"
+        });
 
-    // 10秒タイムアウト設定
-    const timeoutId = setTimeout(() => {
-        showError("GASからの応答がありませんでした。デプロイ設定をご確認ください。");
-    }, 10000);
-
-    window.gasTimeoutId = timeoutId;
-
-    const script = document.createElement('script');
-    script.id = 'gas-jsonp';
-    script.src = jsonpUrl + "&_t=" + new Date().getTime(); // キャッシュ対策
-    script.onerror = () => {
-        clearTimeout(window.gasTimeoutId);
-        showError("スクリプトの読み込みに失敗しました。");
-    };
-    
-    document.body.appendChild(script);
-}
-
-// 2. JSONPコールバック関数（受信処理）
-function handleResponse(response) {
-    if (window.gasTimeoutId) clearTimeout(window.gasTimeoutId);
-
-    if (!response) {
-        showError("データを受け取れませんでした。");
-        return;
-    }
-
-    if (response.status === "empty_sheet") {
-        showError("スプレッドシートに見出し行が設定されていません。");
-        return;
-    }
-    
-    if (response.error) {
-        showError("GASエラー: " + response.error);
-        return;
-    }
-
-    // レスポンスデータの正規化（新・旧GASレスポンス両対応）
-    const rawData = response.data || (Array.isArray(response) ? response : []);
-
-    // 見出し行や不正な行を排除
-    homeworkData = rawData.filter(item => {
-        if (!item || !item.subject) return false;
-        const subj = String(item.subject).trim();
-        return subj !== '' && subj !== '教科' && subj !== 'undefined' && subj !== '-';
-    });
-
-    updateLastUpdatedTime();
-    renderAlertZone(homeworkData);
-    applyFiltersAndRender();
-}
-
-// 3. 日付フォーマット整形ヘルパー（ISO文字列などを「M/D」に整える）
-function formatDeadline(dateStr) {
-    if (!dateStr) return '未定';
-    
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr;
-
-    const month = d.getMonth() + 1;
-    const date = d.getDate();
-
-    return `${month}/${date}`;
-}
-
-// 4. 教科クラス名変換ヘルパー
-function getSubjectClass(subject) {
-    switch (subject) {
-        case '国語': return 'badge-japanese';
-        case '数学': return 'badge-math';
-        case '社会': return 'badge-social';
-        case '理科': return 'badge-science';
-        case '英語': return 'badge-english';
-        case '技術・家庭': return 'badge-tech';
-        case '音楽': return 'badge-music';
-        case '美術': return 'badge-art';
-        default: return 'badge-other';
-    }
-}
-
-// 5. フィルター適用＆描画関数
-function applyFiltersAndRender() {
-    const standardSubjects = ['国語', '数学', '社会', '理科', '英語', '技術・家庭', '音楽', '美術'];
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let filtered = homeworkData.filter(item => {
-        // --- 教科フィルター ---
-        if (currentSubject === 'その他') {
-            if (standardSubjects.includes(item.subject)) return false;
-        } else if (currentSubject !== 'すべて') {
-            if (item.subject !== currentSubject) return false;
+        if (!response.ok) {
+            throw new Error(`HTTPエラー: ${response.status}`);
         }
 
-        // --- 表示日数（絞り込み）フィルター ---
-        if (currentDaysFilter !== 'all' && currentDaysFilter !== '') {
-            if (!item.deadline) return true; // 締め切り未定は保護して表示
+        const result = await response.json();
 
-            // 「1週間前から表示」などの文字列から数値を自動計算
-            let maxDays = 14; 
-            const match = currentDaysFilter.match(/\d+/);
-            if (match) {
-                const num = parseInt(match[0], 10);
-                if (currentDaysFilter.includes('週間')) {
-                    maxDays = num * 7;
-                } else if (currentDaysFilter.includes('ヶ月') || currentDaysFilter.includes('月')) {
-                    maxDays = num * 30;
-                } else {
-                    maxDays = num;
-                }
-            }
-
-            const deadlineDate = new Date(item.deadline);
-            if (!isNaN(deadlineDate.getTime())) {
-                deadlineDate.setHours(0, 0, 0, 0);
-                
-                const diffDays = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
-
-                // 期限が過ぎすぎている（過去2日以上前）、または指定日数を超える先の課題を弾く
-                if (diffDays < -1 || diffDays > maxDays) {
-                    return false;
-                }
-            }
+        if (result.status === "error") {
+            throw new Error(result.error || "GAS側でエラーが発生しました");
         }
 
-        return true;
-    });
+        homeworkData = result.data || [];
+        updateUI();
 
-    renderCards(filtered);
-}
-
-// 6. 宿題カードの描画
-function renderCards(data) {
-    const mainContainer = document.querySelector('main');
-    if (!mainContainer) return;
-
-    if (data.length === 0) {
-        mainContainer.innerHTML = '<div class="loading">現在、出されている宿題はありません！🎉</div>';
-        return;
-    }
-
-    let html = '';
-    data.forEach(item => {
-        const badgeClass = getSubjectClass(item.subject);
-        const deadlineText = formatDeadline(item.deadline);
-        
-        html += `
-            <div class="card" data-subject="${item.subject}">
-                <div class="card-header">
-                    <span class="subject-badge ${badgeClass}">${item.subject}</span>
-                    <span class="deadline">⏳ 締め切り: ${deadlineText}</span>
-                </div>
-                <div class="card-body">
-                    <div class="range">${item.range || '範囲指定なし'}</div>
-                    ${item.notes ? `<p class="notes">📝 ${item.notes}</p>` : ''}
-                </div>
-            </div>
-        `;
-    });
-    mainContainer.innerHTML = html;
-}
-
-// 7. ⚠️ 警告ゾーン（締め切り間近：14日以内）の描画
-function renderAlertZone(data) {
-    const alertZone = document.querySelector('.alert-zone');
-    if (!alertZone) return;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const urgentItems = data.filter(item => {
-        if (!item.deadline) return false;
-        const deadlineDate = new Date(item.deadline);
-        if (isNaN(deadlineDate.getTime())) return false;
-
-        deadlineDate.setHours(0, 0, 0, 0);
-        const diffDays = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
-        return diffDays >= 0 && diffDays <= 14;
-    });
-
-    if (urgentItems.length === 0) {
-        alertZone.innerHTML = '';
-        return;
-    }
-
-    let html = `<h2>⚠️ 締め切り間近（14日以内）</h2>`;
-    urgentItems.forEach(item => {
-        const badgeClass = getSubjectClass(item.subject);
-        const deadlineText = formatDeadline(item.deadline);
-        
-        html += `
-            <div class="alert-card">
-                <span class="alert-badge ${badgeClass}">${item.subject}</span>
-                <span class="alert-range">${item.range || ''}</span>
-                <span class="alert-days">⏳ 締め切り: ${deadlineText}</span>
-            </div>
-        `;
-    });
-    alertZone.innerHTML = html;
-}
-
-// 8. エラー表示
-function showError(message) {
-    const mainContainer = document.querySelector('main');
-    if (mainContainer) {
-        mainContainer.innerHTML = `<div class="error">⚠️ ${message}</div>`;
+    } catch (error) {
+        console.error("Fetch error:", error);
+        if (errorElem) {
+            errorElem.textContent = `⚠️ データ通信に失敗しました。(${error.message})`;
+        }
     }
 }
 
-// 9. 最終更新日時
-function updateLastUpdatedTime() {
-    const updateElem = document.querySelector('.update-info');
-    if (updateElem) {
+function updateUI() {
+    const updateTimeElem = document.querySelector('.update-info');
+    if (updateTimeElem) {
         const now = new Date();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const date = String(now.getDate()).padStart(2, '0');
+        const month = now.getMonth() + 1;
+        const date = now.getDate();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-        updateElem.textContent = `データ更新: ${month}/${date} ${hours}:${minutes}`;
+        updateTimeElem.textContent = `データ更新: ${month}/${date} ${hours}:${minutes}`;
     }
+
+    renderCards();
 }
 
-// ==========================================
-// 🚀 イベントリスナー登録 & 初期化
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    // 教科ボタンのクリック処理
-    const navButtons = document.querySelectorAll('.nav-btn');
-    navButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            navButtons.forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            
-            currentSubject = e.target.getAttribute('data-subject') || 'すべて';
-            
-            const header = document.querySelector('header');
-            if (header) header.setAttribute('data-subject', currentSubject);
+function renderCards() {
+    const container = document.getElementById('card-container');
+    if (!container) return;
 
-            applyFiltersAndRender();
+    const filtered = homeworkData.filter(item => {
+        if (currentSubject === 'すべて') return true;
+        return item.subject === currentSubject;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="loading">現在、対象の宿題はありません！🎉</div>';
+        return;
+    }
+
+    container.innerHTML = filtered.map(item => `
+        <div class="card">
+            <div class="card-header">
+                <span class="subject-badge">${item.subject || 'その他'}</span>
+                <span class="deadline">⏳ 締め切り: ${formatDeadline(item.deadline)}</span>
+            </div>
+            <div class="card-body">
+                <div class="range">${item.range || ''}</div>
+                ${item.notes ? `<p class="notes">${item.notes}</p>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function formatDeadline(dateStr) {
+    if (!dateStr) return '未定';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return `${d.getMonth() + 1}/${d.getDate()}`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ボタン切り替えイベント
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            currentSubject = e.target.getAttribute('data-subject') || 'すべて';
+            renderCards();
         });
     });
 
-    // 絞り込みセレクトボックスの変更処理
-    const daysSelect = document.querySelector('.days-filter-container select');
-    if (daysSelect) {
-        daysSelect.addEventListener('change', (e) => {
-            currentDaysFilter = e.target.value;
-            applyFiltersAndRender();
-        });
-    }
-
-    // 初回データ取得
-    fetchHomeworkZone();
+    fetchHomework();
 });
