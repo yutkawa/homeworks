@@ -71,18 +71,14 @@ function toggleComplete(id) {
 }
 
 function updateUI() {
-    const updateTimeElem = document.getElementById('last-updated') || document.querySelector('.update-info');
+    const updateTimeElem = document.getElementById('last-updated');
     if (updateTimeElem) {
         const now = new Date();
         const month = now.getMonth() + 1;
         const date = now.getDate();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-        if (updateTimeElem.id === 'last-updated') {
-            updateTimeElem.textContent = `${month}/${date} ${hours}:${minutes}`;
-        } else {
-            updateTimeElem.textContent = `データ更新: ${month}/${date} ${hours}:${minutes}`;
-        }
+        updateTimeElem.textContent = `${month}/${date} ${hours}:${minutes}`;
     }
 
     const today = new Date();
@@ -91,6 +87,8 @@ function updateUI() {
     const activeItems = [];
     const archivedItems = [];
     const completedIds = getCompletedIds();
+
+    let activeUncompletedCount = 0; // 残り未完了カウンター用
 
     homeworkData.forEach(item => {
         const d = parseDeadline(item.deadline);
@@ -101,6 +99,7 @@ function updateUI() {
                 archivedItems.push(item);
             } else {
                 activeItems.push(item);
+                activeUncompletedCount++;
             }
             return;
         }
@@ -114,9 +113,16 @@ function updateUI() {
         if (completedIds.includes(item.id) || diffDays < 0) {
             archivedItems.push(item); 
         } else {
-            activeItems.push(item);   
+            activeItems.push(item);
+            activeUncompletedCount++; // 期限内かつ未完了の件数
         }
     });
+
+    // カウンターの表示を更新
+    const counterElem = document.getElementById('remaining-counter');
+    if (counterElem) {
+        counterElem.textContent = `残り宿題: ${activeUncompletedCount}件`;
+    }
 
     renderCards(activeItems, archivedItems);
 }
@@ -127,7 +133,6 @@ function renderCards(activeItems, archivedItems) {
 
     const completedIds = getCompletedIds();
 
-    // 科目フィルター ＆ キーワード検索の適用
     const filteredActive = activeItems.filter(item => filterBySubject(item) && filterBySearch(item));
     const filteredArchived = archivedItems.filter(item => filterBySubject(item) && filterBySearch(item));
 
@@ -247,14 +252,12 @@ function formatDeadline(dateStr) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ダークモードの復元
     if (localStorage.getItem('dark_mode') === 'true') {
         document.body.classList.add('dark-mode');
         const btn = document.getElementById('dark-mode-btn');
         if (btn) btn.textContent = '☀️';
     }
 
-    // ダークモードボタンのイベント
     const darkModeBtn = document.getElementById('dark-mode-btn');
     if (darkModeBtn) {
         darkModeBtn.addEventListener('click', () => {
@@ -265,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // キーワード検索のイベント
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
