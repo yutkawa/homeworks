@@ -130,6 +130,10 @@ function renderCards(activeItems, archivedItems) {
     const container = document.getElementById('homework-container') || document.querySelector('main');
     if (!container) return;
 
+    // ▼ 再描画する前に、既存のアーカイブdetailsが開いていたかどうかを記憶しておく
+    const existingDetails = container.querySelector('#archive-details');
+    const wasOpen = existingDetails ? existingDetails.open : false;
+
     const completedIds = getCompletedIds();
 
     const filteredActive = activeItems.filter(item => filterBySubject(item) && filterBySearch(item));
@@ -147,10 +151,10 @@ function renderCards(activeItems, archivedItems) {
         html += '<div class="loading">該当する宿題はありません</div>';
     }
 
-    // 【過去の課題 (アーカイブ) ＆ 完了済み】（折りたたみ対応）
+    // 【過去の課題 (アーカイブ) ＆ 完了済み】（id="archive-details" を付与）
     if (filteredArchived.length > 0) {
         html += `
-            <details style="margin-top: 35px; background: rgba(0,0,0,0.02); border: 1px solid #e2e8f0; border-radius: 16px; padding: 0.8rem 1.2rem;">
+            <details id="archive-details" ${wasOpen ? 'open' : ''} style="margin-top: 35px; background: rgba(0,0,0,0.02); border: 1px solid #e2e8f0; border-radius: 16px; padding: 0.8rem 1.2rem;">
                 <summary style="cursor: pointer; font-weight: 700; color: #64748b; font-size: 0.95rem; outline: none; user-select: none;">
                     終了した課題 (アーカイブ・完了済: ${filteredArchived.length}件)
                 </summary>
