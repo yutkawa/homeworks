@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1-D 宿題公開サイト</title>
-    <!-- カラフル星のファビコン -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 stop-color=%22%234285f4%22/><stop offset=%2233%25%22 stop-color=%22%2334a853%22/><stop offset=%2266%25%22 stop-color=%22%23fbbc05%22/><stop offset=%22100%25%22 stop-color=%22%23ea4335%22/></linearGradient></defs><polygon points=%2212,0 15.5,8.5 24,12 15.5,15.5 12,24 8.5,15.5 0,12 8.5,8.5%22 fill=%22url(%23g)%22/></svg>">
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- 🌙 ダークモード切り替えボタン -->
-    <button id="dark-mode-btn" class="dark-mode-toggle" title="ダークモード切替">🌙</button>
-
-    <!-- 🏷️ ヘッダーエリアでござる -->
+    <!-- 🏷️ ヘッダーエリア -->
     <header id="page-header">
+        <!-- 🌙 ダークモード切り替えボタン（ヘッダーの右上内に配置） -->
+        <button id="dark-mode-btn" class="dark-mode-toggle" title="ダークモード切替">🌙</button>
         <h1>1-D 宿題公開サイト</h1>
         <p class="update-info">データ更新: <span id="last-updated">--/-- --:--</span></p>
     </header>
@@ -35,8 +31,8 @@
     </nav>
 
     <!-- 🔍 キーワード検索バー -->
-    <div class="search-container" style="max-width: 550px; margin: 0 auto 1.2rem auto; padding: 0 1.2rem; box-sizing: border-box;">
-        <input type="text" id="search-input" placeholder="🔍 範囲や注意書きでキーワード検索..." style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; outline: none; box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="🔍 範囲や注意書きでキーワード検索...">
     </div>
 
     <!-- 📋 宿題カードメインエリア -->
