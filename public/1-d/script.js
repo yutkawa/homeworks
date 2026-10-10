@@ -88,7 +88,7 @@ function updateUI() {
     const archivedItems = [];
     const completedIds = getCompletedIds();
 
-    let activeUncompletedCount = 0; // 残り未完了カウンター用
+    let activeUncompletedCount = 0;
 
     homeworkData.forEach(item => {
         const d = parseDeadline(item.deadline);
@@ -114,11 +114,10 @@ function updateUI() {
             archivedItems.push(item); 
         } else {
             activeItems.push(item);
-            activeUncompletedCount++; // 期限内かつ未完了の件数
+            activeUncompletedCount++;
         }
     });
 
-    // カウンターの表示を更新
     const counterElem = document.getElementById('remaining-counter');
     if (counterElem) {
         counterElem.textContent = `残り宿題: ${activeUncompletedCount}件`;
@@ -138,6 +137,7 @@ function renderCards(activeItems, archivedItems) {
 
     let html = '';
 
+    // 【進行中の課題】
     if (filteredActive.length > 0) {
         filteredActive.sort((a, b) => (a.diffDays ?? 999) - (b.diffDays ?? 999));
         filteredActive.forEach(item => {
@@ -147,18 +147,23 @@ function renderCards(activeItems, archivedItems) {
         html += '<div class="loading">該当する宿題はありません</div>';
     }
 
+    // 【過去の課題 (アーカイブ) ＆ 完了済み】（折りたたみ対応）
     if (filteredArchived.length > 0) {
         html += `
-            <div style="width: 100%; margin-top: 40px; margin-bottom: 20px;">
-                <h3 style="color: #7f8c8d; border-bottom: 2px dashed #bdc3c7; padding-bottom: 8px;">
-                    終了した課題 (アーカイブ・完了済)
-                </h3>
-            </div>
+            <details style="margin-top: 35px; background: rgba(0,0,0,0.02); border: 1px solid #e2e8f0; border-radius: 16px; padding: 0.8rem 1.2rem;">
+                <summary style="cursor: pointer; font-weight: 700; color: #64748b; font-size: 0.95rem; outline: none; user-select: none;">
+                    終了した課題 (アーカイブ・完了済: ${filteredArchived.length}件)
+                </summary>
+                <div style="margin-top: 1.2rem;">
         `;
         filteredArchived.sort((a, b) => (b.diffDays ?? 0) - (a.diffDays ?? 0));
         filteredArchived.forEach(item => {
             html += createCardHtml(item, true, completedIds.includes(item.id));
         });
+        html += `
+                </div>
+            </details>
+        `;
     }
 
     container.innerHTML = html;
