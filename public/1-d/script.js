@@ -11,7 +11,6 @@ window.handleResponse = function(response) {
     }
 
     homeworkData = response.data || [];
-    // 各データに一意のIDを付与
     homeworkData.forEach((item, index) => {
         item.id = `${item.subject}_${item.deadline}_${index}`;
     });
@@ -52,7 +51,6 @@ function parseDeadline(dateStr) {
     return null;
 }
 
-// 完了済みIDの取得・保存 (localStorage)
 function getCompletedIds() {
     try {
         return JSON.parse(localStorage.getItem('completed_homeworks') || '[]');
@@ -113,7 +111,6 @@ function updateUI() {
         
         item.diffDays = diffDays;
 
-        // 期限切れ、または完了チェックされているものはアーカイブへ
         if (completedIds.includes(item.id) || diffDays < 0) {
             archivedItems.push(item); 
         } else {
@@ -136,17 +133,15 @@ function renderCards(activeItems, archivedItems) {
 
     let html = '';
 
-    // 【進行中の課題】
     if (filteredActive.length > 0) {
         filteredActive.sort((a, b) => (a.diffDays ?? 999) - (b.diffDays ?? 999));
         filteredActive.forEach(item => {
             html += createCardHtml(item, false, completedIds.includes(item.id));
         });
     } else {
-        html += '<div class="loading">期限前の宿題はありません</div>';
+        html += '<div class="loading">該当する宿題はありません</div>';
     }
 
-    // 【過去の課題 (アーカイブ) ＆ 完了済み】
     if (filteredArchived.length > 0) {
         html += `
             <div style="width: 100%; margin-top: 40px; margin-bottom: 20px;">
