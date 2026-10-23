@@ -8,16 +8,16 @@
 </head>
 <body>
 
-    <!-- 🏷️ ヘッダーエリア -->
+    <!-- ヘッダー -->
     <header id="page-header">
-        <!-- 🌙 ダークモード切り替えボタン（ヘッダーの右上内に配置） -->
+        <!-- ダークモード切り替え（ヘッダーの右上内に配置） -->
         <button id="dark-mode-btn" class="dark-mode-toggle" title="ダークモード切替">🌙</button>
         <h1>1-D 宿題公開サイト</h1>
         <p class="update-info">データ更新: <span id="last-updated">--/-- --:--</span></p>
         <p class="update-info" style="margin: 0; background: rgba(255, 255, 255, 0.35); font-weight: 700;" id="remaining-counter">残り宿題: --件</p>
     </header>
 
-    <!-- 📂 教科別ナビゲーションボタン -->
+    <!-- 教科別ナビゲーション -->
     <p class="filter-headline">Subject</p>
     <nav class="subject-nav">
         <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
@@ -32,19 +32,19 @@
         <button class="nav-btn" data-subject="その他" onclick="filterSubject('その他')">その他</button>
     </nav>
 
-    <!-- 🔍 キーワード検索バー -->
+    <!-- キーワード検索バー -->
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="🔍 範囲や注意書きでキーワード検索...">
+        <input type="text" id="search-input" placeholder="範囲や注意書きでキーワード検索...">
     </div>
 
-    <!-- 📋 宿題カードメインエリア -->
+    <!-- 宿題カードメイン -->
     <main>
         <div id="homework-container">
             <div class="loading">宿題データを読み込んでいます...</div>
         </div>
     </main>
 
-    <!-- 🦶 フッターエリア -->
+    <!-- フッター -->
     <footer>
         <p>&copy; 2026 1-D Homework Board</p>
     </footer>
