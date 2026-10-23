@@ -130,7 +130,7 @@ function renderCards(activeItems, archivedItems) {
     const container = document.getElementById('homework-container') || document.querySelector('main');
     if (!container) return;
 
-    // ▼ 再描画する前に、既存のアーカイブdetailsが開いていたかどうかを記憶しておく
+    // ▼ 再描画前 アーカイブフォルダ 開 or 閉 記憶
     const existingDetails = container.querySelector('#archive-details');
     const wasOpen = existingDetails ? existingDetails.open : false;
 
@@ -141,7 +141,7 @@ function renderCards(activeItems, archivedItems) {
 
     let html = '';
 
-    // 【進行中の課題】
+    // 進行中の課題
     if (filteredActive.length > 0) {
         filteredActive.sort((a, b) => (a.diffDays ?? 999) - (b.diffDays ?? 999));
         filteredActive.forEach(item => {
@@ -151,7 +151,7 @@ function renderCards(activeItems, archivedItems) {
         html += '<div class="loading">該当する宿題はありません</div>';
     }
 
-    // 【過去の課題 (アーカイブ) ＆ 完了済み】（id="archive-details" を付与）
+    // 過去の課題 (アーカイブ) ＆ 完了済み（id="archive-details" を付与）
     if (filteredArchived.length > 0) {
         html += `
             <details id="archive-details" ${wasOpen ? 'open' : ''} style="margin-top: 35px; background: rgba(0,0,0,0.02); border: 1px solid #e2e8f0; border-radius: 16px; padding: 0.8rem 1.2rem;">
