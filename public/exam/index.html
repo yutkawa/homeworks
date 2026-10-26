@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-D 宿題公開サイト</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <!-- ヘッダー -->
+    <header id="page-header">
+        <!-- ダークモード切り替え（ヘッダーの右上内に配置） -->
+        <button id="dark-mode-btn" class="dark-mode-toggle" title="ダークモード切替">🌙</button>
+        <h1>1-D 宿題公開サイト</h1>
+        <p class="update-info">データ更新: <span id="last-updated">--/-- --:--</span></p>
+        <p class="update-info" style="margin: 0; background: rgba(255, 255, 255, 0.35); font-weight: 700;" id="remaining-counter">残り宿題: --件</p>
+    </header>
+
+    <!-- 教科別ナビゲーション -->
+    <p class="filter-headline">Subject</p>
+    <nav class="subject-nav">
+        <button class="nav-btn active" data-subject="すべて" onclick="filterSubject('すべて')">すべて</button>
+        <button class="nav-btn" data-subject="国語" onclick="filterSubject('国語')">国語</button>
+        <button class="nav-btn" data-subject="数学" onclick="filterSubject('数学')">数学</button>
+        <button class="nav-btn" data-subject="社会" onclick="filterSubject('社会')">社会</button>
+        <button class="nav-btn" data-subject="理科" onclick="filterSubject('理科')">理科</button>
+        <button class="nav-btn" data-subject="英語" onclick="filterSubject('英語')">英語</button>
+        <button class="nav-btn" data-subject="技術・家庭" onclick="filterSubject('技術・家庭')">技術・家庭</button>
+        <button class="nav-btn" data-subject="音楽" onclick="filterSubject('音楽')">音楽</button>
+        <button class="nav-btn" data-subject="美術" onclick="filterSubject('美術')">美術</button>
+        <button class="nav-btn" data-subject="その他" onclick="filterSubject('その他')">その他</button>
+    </nav>
+
+    <!-- キーワード検索バー -->
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="範囲や注意書きでキーワード検索...">
+    </div>
+
+    <!-- 宿題カードメイン -->
+    <main>
+        <div id="homework-container">
+            <div class="loading">宿題データを読み込んでいます...</div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer>
+        <p>&copy; 2026 1-D Homework Board</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
