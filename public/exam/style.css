@@ -146,29 +146,6 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
 .nav-btn[data-subject="美術"].active { background: #b08bf0 !important; border-color: #b08bf0 !important; }
 .nav-btn[data-subject="その他"].active { background: #64748b !important; border-color: #64748b !important; }
 
-/* ====================
-   検索バースタイル
-   ==================== */
-.search-container {
-    max-width: 550px;
-    margin: 0 auto 1.2rem auto;
-    padding: 0 1.2rem;
-    box-sizing: border-box;
-}
-
-#search-input {
-    width: 100%;
-    padding: 0.6rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    outline: none;
-    box-sizing: border-box;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    background-color: #ffffff;
-    color: #2c3e50;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
 
 /* ==================
    教科バッジ（共通）
