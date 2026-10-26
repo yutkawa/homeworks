@@ -120,7 +120,7 @@ function updateUI() {
 
     const counterElem = document.getElementById('remaining-counter');
     if (counterElem) {
-        counterElem.textContent = `残り宿題: ${activeUncompletedCount}件`;
+        counterElem.textContent = `残り教科: ${activeUncompletedCount}件`;
     }
 
     renderCards(activeItems, archivedItems);
@@ -148,7 +148,7 @@ function renderCards(activeItems, archivedItems) {
             html += createCardHtml(item, false, completedIds.includes(item.id));
         });
     } else {
-        html += '<div class="loading">該当する宿題はありません</div>';
+        html += '<div class="loading">該当する教科はありません</div>';
     }
 
     // 過去の課題 (アーカイブ) ＆ 完了済み（id="archive-details" を付与）
@@ -156,7 +156,7 @@ function renderCards(activeItems, archivedItems) {
         html += `
             <details id="archive-details" ${wasOpen ? 'open' : ''} style="margin-top: 35px; background: rgba(0,0,0,0.02); border: 1px solid #e2e8f0; border-radius: 16px; padding: 0.8rem 1.2rem;">
                 <summary style="cursor: pointer; font-weight: 700; color: #64748b; font-size: 0.95rem; outline: none; user-select: none;">
-                    終了した課題 (アーカイブ・完了済: ${filteredArchived.length}件)
+                    終了した教科 (アーカイブ・完了済: ${filteredArchived.length}件)
                 </summary>
                 <div style="margin-top: 1.2rem;">
         `;
@@ -198,7 +198,7 @@ function createCardHtml(item, isArchived, isCompleted) {
                 </div>
                 <div style="display: flex; align-items: center; gap: 6px;">
                     ${tagHtml}
-                    <span class="deadline">締め切り: ${deadlineText}</span>
+                    <span class="deadline">試験日: ${deadlineText}</span>
                 </div>
             </div>
             <div class="card-body">
