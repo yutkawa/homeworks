@@ -130,7 +130,7 @@ function renderCards(activeItems, archivedItems) {
     const container = document.getElementById('homework-container') || document.querySelector('main');
     if (!container) return;
 
-    // ▼ 再描画前 アーカイブフォルダ 開 or 閉 記憶
+    // ▼ 再描画前 アーカイブフォルダ 開 or 閉 記憶させる
     const existingDetails = container.querySelector('#archive-details');
     const wasOpen = existingDetails ? existingDetails.open : false;
 
