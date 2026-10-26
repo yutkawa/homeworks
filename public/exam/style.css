@@ -147,7 +147,7 @@ header[data-subject="美術"] { background: linear-gradient(135deg, #c084fc, #e9
 .nav-btn[data-subject="その他"].active { background: #64748b !important; border-color: #64748b !important; }
 
 /* ====================
-   検索バースタイル
+   検索バースタイル部分
    ==================== */
 .search-container {
     max-width: 550px;
